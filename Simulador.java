@@ -219,12 +219,13 @@ public class Simulador {
                            
                            
                            //A listaLotes en el indice i agregale el proceso en la posicion i
-                           lote.procesosLote.add(i, Procesos.get(i)); 
+                          // lote.procesosLote.add(i, Procesos.get(i)); 
                            {
                                //Se  me estan creando el mismo numero de procesos que de lotes y con el mismo proceso en todas las posiciciones
                                for (int a=0;a<lotesreq;a++)
                                {//Cada que a aumente guarda un lote nuevo en la lista Lotes
-                                lote=new Lote(a+1,lote.procesosLote);
+                                   
+                                lote=new Lote(a+1,Procesos);
                                 //Se agrega un objeto tipo Lote, lo cual significa que ya no necesito calcular que tenga entre 1 y 5 
                                 //procesos, porque ya se creo con esa especificacion
                                 Lotes.add(lote);
