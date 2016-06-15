@@ -5,51 +5,158 @@ import javax.swing.JOptionPane;
 public class Simulador {
  	Lote lote = new Lote();	
         Proceso p=new Proceso();
+        Interfaz ventana =new Interfaz();
        
-    boolean tal=false;
-    
+    boolean tal=false,error=false;
+    //Esta array list es para extraer los lotes de donde se almacenan y mostrarlos
+    ArrayList <Proceso> temporal;
+    //En estas array list se guardan los procesos y lotes
     ArrayList <Lote> Lotes;
     ArrayList <Proceso> Procesos;
     int reloj;
-    int lotesrequeridos=0;
+    int lotesreq=0;
     int num1,num2;
-    String operacion="";
   
     boolean termina=false;
-      int id,tme,procesosrecibidos; String programador;
+      int id,tme,procesosrecibidos; String programador,resultado;
     //Contador que lleva el tiempo (determinar mi unidad de tiempo
     //ejemplo 1 tme = x segundos controlados por un delay
       
       
+      
+      
+      
       public Simulador()
       {
-         Lotes= new ArrayList<> (); 
+          
+          Lotes= new ArrayList<> (); 
          Procesos= new ArrayList<> (); 
+         temporal = new ArrayList();
+         
+         
       }
+      
+      
+      
+      	public String Sumar(int n1,int n2)
+	{
+		int suma= n1+n2;
+		resultado=""+n1+" + "+n2+" = "+suma;
+		return  resultado;
+	}
+	
+	public String Restar(int n1,int n2)
+	{
+		int resta= n1-n2;
+		resultado=""+n1+" - "+n2+" = "+resta;
+		return  resultado;
+	}
+	
+	public String Multiplicar(int n1,int n2)
+	{
+		int mult= n1*n2;
+		resultado=""+n1+" * "+n2+" = "+mult;
+		
+		return  resultado;
+	}
+	
+	public String Dividir(int n1,int n2)
+	{
+		if(n2<=0)
+		{
+		 	JOptionPane.showMessageDialog(null, "Error: Division entre 0!", "", JOptionPane.ERROR_MESSAGE);
+                        error=true;
+		}
+		else
+		{
+		 int div= n1/n2;
+		 resultado=""+n1+" / "+n2+" = "+div;	
+		}
+	
+		
+		return  resultado;
+	}
+	
+	public String Residuo(int n1,int n2)
+	{
+		if(n2<=0)
+		{
+		 	
+                        JOptionPane.showMessageDialog(null, "Division entre 0!", "", JOptionPane.ERROR_MESSAGE);
+                        error=true;
+		}
+		else
+		{
+		 int residuo= n1/n2;
+		 resultado=""+n1+" / "+n2+" = "+residuo;	
+		}
+		return  resultado;
+	}
+	
+	public String Potencia(int n1,int n2)
+	{
+	 int potencia=(int) Math.pow(n1, n2);;
+		resultado=""+n1+" ^ "+n2+" = "+potencia;
+		return  resultado;	
+	}
  
     public void menu(){
   
     	int cuentaprocesos=0;
         String opcion="0";
-    
+        
     	
         String op;
-          procesosrecibidos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingresa el numero de procesos: "));
-          lotesrequeridos=lote.CalcularLotes(procesosrecibidos);
+
+        procesosrecibidos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingresa el numero de procesos: "));
+         lotesreq=lote.CalcularLotes(procesosrecibidos); 
           
           
        do{
-           op = JOptionPane.showInputDialog(null,"2.  Introducir datos\n"
-                                              +"3.  Modificar datos\n"
-                                              +"4.  Eliminar datos\n"
-                                              +"5.  Buscar datos\n"
-                                              +"6.  Mostrar datos\n"
-                                              +"7.  Salir");
+           op = JOptionPane.showInputDialog(null,"1.\n  Ver Interfaz\n"
+                                              + "2.  Introducir datos\n"
+                                              +"3.  Mostrar datos\n"
+                                              +"4.  Salir");
                                               
- 			
+ 		reloj++;	
            switch(op){
+               case "1"://Ver lote
+                            ventana.Simular();
+               
+                      //Mostrar lote completo
+                       for( int m = 0 ; m  < Lotes.size(); m++)
+                       {
+                        Lotes.get(m).ObtenerIdLote();
+                       temporal= Lotes.get(m).ObtenerProcesos();
+                       }
+                       
+                         for( int i = 0 ; i  < temporal.size(); i++)
+                         {
+                         ventana.txt_programador.setText(temporal.get(i).ObtenerProgramador());
+                         ventana.txt_idproceso2.setText(Integer.toString(temporal.get(i).ObtenerId()));  
+                           ventana.txt_operacion.setText(temporal.get(i).ObtenerOperacion());
+                           ventana.txt_tme2.setText(Integer.toString(temporal.get(i).ObtenerTME()));
+                           
+                           ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
+                           
+                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
+                           ventana.ta_loteTerminado.append("               "+temporal.get(i).ObtenerOperacion()+"\t");
+                           ventana.ta_loteTerminado.append(Integer.toString(temporal.get(i).ObtenerId()));
+                            ventana.ta_loteTerminado.append("\n");
+                 
+                           ventana.ta_loteActual.append("         "+ventana.txt_idproceso2.getText()+"\t   "+ventana.txt_tme2.getText()+"\n"); 
+                           ventana.ta_loteActual.setLineWrap(true); 
+                           ventana.ta_loteActual.setWrapStyleWord(true);
+                                             
+                       
+                           
+                           
+                       }
+                            
+                            ventana.txt_reloj.setText(Integer.toString(reloj));
+                   break;
                case "2"://Bloque para introducir datos al array list
-                     
+                        
                         if(cuentaprocesos==procesosrecibidos)
            	{
            		 termina=true;
@@ -59,6 +166,20 @@ public class Simulador {
                         
  						
                         id = Integer.parseInt(JOptionPane.showInputDialog(null, "ID: "));
+                        
+                        for(int z=0;z<Procesos.size();z++)
+                        {
+                            if(id==Procesos.get(z).ObtenerId())
+                                {
+                                    JOptionPane.showMessageDialog(null, "Id Duplicado!", "", JOptionPane.ERROR_MESSAGE);
+                                    error=true;
+                                    break;
+                                }
+                        }
+                        
+                        if(error==false)
+                        {
+                            
                         programador = JOptionPane.showInputDialog(null, "Programador: ");
                         tme = Integer.parseInt(JOptionPane.showInputDialog(null, "TME: "));
                         num1 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
@@ -66,17 +187,18 @@ public class Simulador {
                         opcion = JOptionPane.showInputDialog(null, "1)Suma\n2)Resta\n3)Multiplicacion\n4)Division\n5)Residuo\n6)Potencia: ");
                         switch(opcion)
                         {
-                        	case "1":operacion=p.Sumar(num1,num2);
+                            
+                        	case "1":resultado=Sumar(num1,num2);
                         		break;
-                        	case "2":operacion=p.Restar(num1,num2);
+                        	case "2":resultado=Restar(num1,num2);
                         		break;
-                        	case "3":operacion=p.Multiplicar(num1,num2);
+                        	case "3":resultado=Multiplicar(num1,num2);
                         		break;
-                        	case "4":operacion=p.Dividir(num1,num2);
+                        	case "4":resultado=Dividir(num1,num2);
                         		break;
-                        	case "5":operacion=p.Residuo(num1,num2);
+                        	case "5":resultado=Residuo(num1,num2);
                         		break;
-                        	case "6":operacion=p.Potencia(num1,num2);
+                        	case "6":resultado=Potencia(num1,num2);
                         		break;
                         
                         		default:
@@ -84,91 +206,57 @@ public class Simulador {
                         }
                         
                         //Agregar objeto a la lista
-                         p=new Proceso(id,programador,tme,operacion);
-                        Procesos.add(p);  
-                        cuentaprocesos++;
-                          
-                            // Procesos.add(new Proceso(id,programador,tme,operacion));
+                        //Aqui se borro el lote que tenia y se encima el nuevo
                         
+                        //La variable operacion tiene algo mal y reemplaza a la operacion anterior
+                         p=new Proceso(id,programador,tme,resultado);
+                         cuentaprocesos++;
                          
-                    
-                       	/*
-                        if(Procesos.size()<=lote.capacidad)
-                        {
-							int x=1;	
-								if(x!=lotesrequeridos)
-								{
-								 Lotes.add(new Lote(x,Procesos));	
-								 	x++;
-								}
-				
-                         	cuentaprocesos=0;
-                        }
+                        Procesos.add(p);  
+                   
                        
-                      */
-                        	                       
+                       for( int i = 0 ; i  < Procesos.size(); i++){  
+                           
+                           
+                           //A listaLotes en el indice i agregale el proceso en la posicion i
+                           lote.procesosLote.add(i, Procesos.get(i)); 
+                           {
+                               //Se  me estan creando el mismo numero de procesos que de lotes y con el mismo proceso en todas las posiciciones
+                               for (int a=0;a<lotesreq;a++)
+                               {//Cada que a aumente guarda un lote nuevo en la lista Lotes
+                                lote=new Lote(a+1,lote.procesosLote);
+                                //Se agrega un objeto tipo Lote, lo cual significa que ya no necesito calcular que tenga entre 1 y 5 
+                                //procesos, porque ya se creo con esa especificacion
+                                Lotes.add(lote);
+                               }
+                               
+                           }
                                     
-                   break;
-               case "3"://Bloque para modificar datos al array list
-                   
-                        int indice, b;
-                        String c;
-                        b = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el indice(id) a Modificar: "));
-                        if(existeEnArray(b)){                            
-                            indice = indiceDato(b);
-                            c = JOptionPane.showInputDialog(null, "Programador: ");
-                            Procesos.get(indice).AsignarNombre(c); 
-                            	//Aqui se puede indicarle que modifique mas atributos invocando al metodo asignarATRIBUTO() creado en Proceso
-                        }else{
-                            JOptionPane.showMessageDialog(null, "No existe el dato a modificar !", "", JOptionPane.ERROR_MESSAGE);
-                        }
-                                 
-                   break;
-               case "4"://Bloque para eliminar dato del array
-                   
-                   
-                        id = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el Id a eliminar: "));
-                        for(int i=0; i<Procesos.size(); i++){
-                            if(Procesos.get(i).ObtenerId()==id){
-                                Procesos.remove(i);
-                            }
-                        }
-                     
-                   break;
-               case "5"://Bloque para buscar datos en el array list
-                  
-                        String mostrarBus= "No se ha encontrado nada!";
+                                    
+                       }
+                    
                         
-                        id = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingrese el Id a buscar: "));
-                        for( int i = 0 ; i  < Procesos.size(); i++){
-                        	//Obtener el id del objeto almacenado en la posicion 0,1,2,...
-                            if(Procesos.get(i).ObtenerId()==id){
-                                mostrarBus  ="";
-                                mostrarBus += "Id: "+Procesos.get(i).ObtenerId();
-                                mostrarBus += "\nNombre "+Procesos.get(i).ObtenerProgramador();
-                                mostrarBus += "\nOperacion "+Procesos.get(i).ObtenerOperacion();
-                                mostrarBus += "\nTME: "+Procesos.get(i).ObtenerTME();
-                                mostrarBus += "\n"+"\n";
-                            }                        
-                       }
-                         JOptionPane.showMessageDialog(null, mostrarBus);
                   
- 
+                            
+                        }
+                          
                    break;
-               case "6"://Bloque para mostar los datos del array list
+              
+               case "3"://Bloque para mostar los datos del array list
                   
-                       String Salida= "";
+                       String Muestra= "";
                        for( int i = 0 ; i  < Procesos.size(); i++){
-                        Salida += "Id: "+Procesos.get(i).ObtenerId();
-                        Salida += "\nProgramador: "+Procesos.get(i).ObtenerProgramador();
-                        Salida += "\nOperacion: "+Procesos.get(i).ObtenerOperacion();
-                        Salida += "\nTME: "+Procesos.get(i).ObtenerTME();
-                        Salida += "\n"+"\n";
+                        Muestra += "Id: "+Procesos.get(i).ObtenerId();
+                        Muestra += "\nProgramador: "+Procesos.get(i).ObtenerProgramador();
+                        Muestra += "\nOperacion: "+Procesos.get(i).ObtenerOperacion();
+                        Muestra += "\nTME: "+Procesos.get(i).ObtenerTME();
+                        Muestra += "\n"+"\n";
                        }
-                        JOptionPane.showMessageDialog(null, Salida);
+                        JOptionPane.showMessageDialog(null, Muestra);
+                        
                                     
                    break;                   
-               case "7":
+               case "4":
                    System.exit(0);
                    break;
                default:
@@ -176,10 +264,33 @@ public class Simulador {
                    break;
            }      
            	
-           	
+      
+                       
+                               	
        }while(!op.equals("7")||termina!=true);
        
-     
+       
+   
+                   
+      /*
+              int j=0,h=4;
+	    	for(int i=0;i<=lotesreq;i++)
+                {
+                    //Si encuentra procesos en la lista entre la posicion 0 y 4 que cree un lote con ellos
+                     for(int c=j;c<=h;c++)
+                        { 
+                          lote.procesosLote.add(c,Procesos.get(c));
+                        }   
+                   lote = new  Lote(i+1,lote.procesosLote);//Agregar a objeto lote
+                   Lotes.add(lote);//agregar lote al arraylist de lotes
+                    //despues aumenta para que busque de 5 en 5 en las posiciones del arraylist
+                    j+=4;
+                    h+=j+4;
+                }
+       */
+                
+                    
+                    
       
        
        
