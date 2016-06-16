@@ -1,9 +1,11 @@
 
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
  
 public class Simulador {
  	Lote lote = new Lote();	
+        Lote lotevacio=new Lote();
         Proceso p=new Proceso();
         Interfaz ventana =new Interfaz();
        
@@ -12,26 +14,29 @@ public class Simulador {
     ArrayList <Proceso> temporal;
     //En estas array list se guardan los procesos y lotes
     ArrayList <Lote> Lotes;
+    ArrayList <Proceso> LoteTemporal;
     ArrayList <Proceso> Procesos;
     int reloj;
     int lotesreq=0;
     int num1,num2;
+    
   
     boolean termina=false;
       int id,tme,procesosrecibidos; String programador,resultado;
     //Contador que lleva el tiempo (determinar mi unidad de tiempo
     //ejemplo 1 tme = x segundos controlados por un delay
       
-      
+      String opcion="";
       
       
       
       public Simulador()
       {
-          
+          //quiero capturar n objetos, dividir n/5, crear un array list que
           Lotes= new ArrayList<> (); 
          Procesos= new ArrayList<> (); 
          temporal = new ArrayList();
+         LoteTemporal = new ArrayList();
          
          
       }
@@ -87,8 +92,8 @@ public class Simulador {
 		}
 		else
 		{
-		 int residuo= n1/n2;
-		 resultado=""+n1+" / "+n2+" = "+residuo;	
+		 int residuo= n1%n2;
+		 resultado=""+n1+" % "+n2+" = "+residuo;	
 		}
 		return  resultado;
 	}
@@ -102,78 +107,40 @@ public class Simulador {
  
     public void menu(){
   
-    	int cuentaprocesos=0;
-        String opcion="0";
+    	int cuentaprocesos2=0;
+       int cuentaprocesos=0;
+      int cuentalotes;
         
     	
         String op;
 
         procesosrecibidos = Integer.parseInt(JOptionPane.showInputDialog(null, "Ingresa el numero de procesos: "));
          lotesreq=lote.CalcularLotes(procesosrecibidos); 
+          int tam=0;
           
-          
+          cuentalotes=0;
        do{
-           op = JOptionPane.showInputDialog(null,"1.\n  Ver Interfaz\n"
-                                              + "2.  Introducir datos\n"
-                                              +"3.  Mostrar datos\n"
-                                              +"4.  Salir");
-                                              
+                               
  		reloj++;	
-           switch(op){
-               case "1"://Ver lote
-                            ventana.Simular();
-               
-                      //Mostrar lote completo
-                       for( int m = 0 ; m  < Lotes.size(); m++)
-                       {
-                        Lotes.get(m).ObtenerIdLote();
-                       temporal= Lotes.get(m).ObtenerProcesos();
-                       }
+                              
+               //Bloque para introducir datos al array list
                        
-                         for( int i = 0 ; i  < temporal.size(); i++)
-                         {
-                         ventana.txt_programador.setText(temporal.get(i).ObtenerProgramador());
-                         ventana.txt_idproceso2.setText(Integer.toString(temporal.get(i).ObtenerId()));  
-                           ventana.txt_operacion.setText(temporal.get(i).ObtenerOperacion());
-                           ventana.txt_tme2.setText(Integer.toString(temporal.get(i).ObtenerTME()));
-                           
-                           ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
-                           
-                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
-                           ventana.ta_loteTerminado.append("               "+temporal.get(i).ObtenerOperacion()+"\t");
-                           ventana.ta_loteTerminado.append(Integer.toString(temporal.get(i).ObtenerId()));
-                            ventana.ta_loteTerminado.append("\n");
-                 
-                           ventana.ta_loteActual.append("         "+ventana.txt_idproceso2.getText()+"\t   "+ventana.txt_tme2.getText()+"\n"); 
-                           ventana.ta_loteActual.setLineWrap(true); 
-                           ventana.ta_loteActual.setWrapStyleWord(true);
-                                             
-                       
-                           
-                           
-                       }
-                            
-                            ventana.txt_reloj.setText(Integer.toString(reloj));
-                   break;
-               case "2"://Bloque para introducir datos al array list
-                        
-                        if(cuentaprocesos==procesosrecibidos)
+                        if(cuentaprocesos2==procesosrecibidos)
            	{
            		 termina=true;
-                         JOptionPane.showMessageDialog(null, "Ya no puedes ingresar mas procesos!", "", JOptionPane.ERROR_MESSAGE);
+                       //  JOptionPane.showMessageDialog(null, "Ya no puedes ingresar mas procesos!", "", JOptionPane.ERROR_MESSAGE);
                         break;
            	}
-                        
+                      
  						
                         id = Integer.parseInt(JOptionPane.showInputDialog(null, "ID: "));
                         
                         for(int z=0;z<Procesos.size();z++)
                         {
-                            if(id==Procesos.get(z).ObtenerId())
+                            while(id==Procesos.get(z).ObtenerId())
                                 {
                                     JOptionPane.showMessageDialog(null, "Id Duplicado!", "", JOptionPane.ERROR_MESSAGE);
-                                    error=true;
-                                    break;
+                                     id = Integer.parseInt(JOptionPane.showInputDialog(null, "ID: "));
                                 }
                         }
                         
@@ -182,13 +149,15 @@ public class Simulador {
                             
                         programador = JOptionPane.showInputDialog(null, "Programador: ");
                         tme = Integer.parseInt(JOptionPane.showInputDialog(null, "TME: "));
+
                         num1 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
                         num2 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
-                        opcion = JOptionPane.showInputDialog(null, "1)Suma\n2)Resta\n3)Multiplicacion\n4)Division\n5)Residuo\n6)Potencia: ");
+                       opcion = JOptionPane.showInputDialog(null, "1)Suma\n2)Resta\n3)Multiplicacion\n4)Division\n5)Residuo\n6)Potencia: ");
                         switch(opcion)
                         {
                             
-                        	case "1":resultado=Sumar(num1,num2);
+
+                               case "1":resultado=Sumar(num1,num2);
                         		break;
                         	case "2":resultado=Restar(num1,num2);
                         		break;
@@ -204,93 +173,107 @@ public class Simulador {
                         		default:
                         			
                         }
+                 
+                         Procesos.add(new Proceso(id,programador,tme,resultado));  
                         
-                        //Agregar objeto a la lista
-                        //Aqui se borro el lote que tenia y se encima el nuevo
-                        
-                        //La variable operacion tiene algo mal y reemplaza a la operacion anterior
-                         p=new Proceso(id,programador,tme,resultado);
-                         cuentaprocesos++;
-                         
-                        Procesos.add(p);  
-                   
-                       
-                       for( int i = 0 ; i  < Procesos.size(); i++){  
-                           
-                           
-                           //A listaLotes en el indice i agregale el proceso en la posicion i
-                          // lote.procesosLote.add(i, Procesos.get(i)); 
-                           {
-                               //Se  me estan creando el mismo numero de procesos que de lotes y con el mismo proceso en todas las posiciciones
-                               for (int a=0;a<lotesreq;a++)
-                               {//Cada que a aumente guarda un lote nuevo en la lista Lotes
-                                   
-                                lote=new Lote(a+1,Procesos);
-                                //Se agrega un objeto tipo Lote, lo cual significa que ya no necesito calcular que tenga entre 1 y 5 
-                                //procesos, porque ya se creo con esa especificacion
-                                Lotes.add(lote);
-                               }
-                               
-                           }
-                                    
-                                    
-                       }
-                    
-                        
-                  
-                            
-                        }
+                         cuentaprocesos++;//controla la asignacion de idlote
+                         cuentaprocesos2++;//controla el while
                           
-                   break;
-              
-               case "3"://Bloque para mostar los datos del array list
-                  
-                       String Muestra= "";
-                       for( int i = 0 ; i  < Procesos.size(); i++){
-                        Muestra += "Id: "+Procesos.get(i).ObtenerId();
-                        Muestra += "\nProgramador: "+Procesos.get(i).ObtenerProgramador();
-                        Muestra += "\nOperacion: "+Procesos.get(i).ObtenerOperacion();
-                        Muestra += "\nTME: "+Procesos.get(i).ObtenerTME();
-                        Muestra += "\n"+"\n";
+                           lote.creaLote((cuentalotes+1),Procesos);
+                           
+                           if(cuentaprocesos==1)
+                           {
+                               Lotes.add(lotevacio);
+                           }
+                           
+                         //  Lotes.add(cuentalotes,lote);
+                           Lotes.set(cuentalotes, lote);
+                         if((cuentaprocesos%5)==0)                      
+                                 {
+                                  
+                            //  Procesos.remove(p);
+                               //Procesos.subList(0, 5).clear();
+                                 
+                                   cuentalotes++;
+                                   cuentaprocesos=0;
+                                  
+                                   //tambien borra el lote en la arraylistLotes, y no quiero que lo borre
+                                   
+                                   //Tomar en cuent22a lo que dijo michel sobre esto
+                                   //NoLotes.add(new Vector<informacionProceso>());
+//si te fijas al agregar el vector nuevo le pongo new para que no copie la referencia y sea un objeto nuevo
+                                   //Cuando borro el arraylistprocesos se borran los procesos de ese arraylist que ya habia guardado en otro array
+                                  //intentar con metodo subList(int fromIndex, int toIndex) 
+                                   //http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html#method_summary
+                                   
+                                 }
+        
+                         
                        }
-                        JOptionPane.showMessageDialog(null, Muestra);
-                        
-                                    
-                   break;                   
-               case "4":
-                   System.exit(0);
-                   break;
-               default:
-                   JOptionPane.showMessageDialog(null, "Opcion invalida !");
-                   break;
-           }      
-           	
-      
+                                  
+                         	
+       }while(error!=true||termina!=true);
+       
+       
+    //Ver lote
+                           ventana.Simular();
+                           
+        if(Lotes.size()==0)//Si no se ha completado un lote con 5 procesos
+        {
+             for(int a=0;a<lote.procesosLote.size();a++)
+                             {
+                                 ventana.txt_programador.setText(lote.procesosLote.get(a).ObtenerProgramador());
+                         ventana.txt_idproceso2.setText(Integer.toString(lote.procesosLote.get(a).ObtenerId()));  
+                           ventana.txt_operacion.setText(lote.procesosLote.get(a).ObtenerOperacion());
+                           ventana.txt_tme2.setText(Integer.toString(lote.procesosLote.get(a).ObtenerTME()));
+                           //poner cuentaLotes
+                           ventana.txt_loteEjecutandose.setText(Integer.toString(cuentalotes));
+                             //poner cuentaLotes
+                           ventana.ta_loteTerminado.append(Integer.toString(cuentalotes));
+                           ventana.ta_loteTerminado.append("               "+lote.procesosLote.get(a).ObtenerOperacion()+"\t");
+                           ventana.ta_loteTerminado.append(Integer.toString(lote.procesosLote.get(a).ObtenerId()));
+                            ventana.ta_loteTerminado.append("\n");
+                            
+                            ventana.ta_loteActual.append("         "+(lote.procesosLote.get(a).ObtenerId())+"\t   "+(lote.procesosLote.get(a).ObtenerTME())+"\n"); 
+                           ventana.ta_loteActual.setLineWrap(true); 
+                           ventana.ta_loteActual.setWrapStyleWord(true);
+                             }
+        }
+                           
+                      //Mostrar lote completo
+                       for( int m = 0 ; m  < Lotes.size(); m++)
+                       {
+                        Lotes.get(m).ObtenerIdLote();
+                        temporal=Lotes.get(m).ObtenerProcesos();
+                       }
                        
-                               	
-       }while(!op.equals("7")||termina!=true);
-       
-       
-   
+                         for( int i = 0 ; i  < Lotes.size(); i++)
+                         {
+                             for(int j=0;j<temporal.size();j++)
+                             {
+                                 ventana.txt_programador.setText(temporal.get(j).ObtenerProgramador());
+                         ventana.txt_idproceso2.setText(Integer.toString(temporal.get(j).ObtenerId()));  
+                           ventana.txt_operacion.setText(temporal.get(j).ObtenerOperacion());
+                           ventana.txt_tme2.setText(Integer.toString(temporal.get(j).ObtenerTME()));
+                           
+                           ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
+                           
+                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
+                           ventana.ta_loteTerminado.append("               "+temporal.get(j).ObtenerOperacion()+"\t");
+                           ventana.ta_loteTerminado.append(Integer.toString(temporal.get(j).ObtenerId()));
+                            ventana.ta_loteTerminado.append("\n");
+                            
+                            ventana.ta_loteActual.append("         "+(temporal.get(j).ObtenerId())+"\t   "+(temporal.get(j).ObtenerTME())+"\n"); 
+                           ventana.ta_loteActual.setLineWrap(true); 
+                           ventana.ta_loteActual.setWrapStyleWord(true);
+                             }
+                  
+                       }
+                            
+                            ventana.txt_reloj.setText(Integer.toString(reloj));
                    
-      /*
-              int j=0,h=4;
-	    	for(int i=0;i<=lotesreq;i++)
-                {
-                    //Si encuentra procesos en la lista entre la posicion 0 y 4 que cree un lote con ellos
-                     for(int c=j;c<=h;c++)
-                        { 
-                          lote.procesosLote.add(c,Procesos.get(c));
-                        }   
-                   lote = new  Lote(i+1,lote.procesosLote);//Agregar a objeto lote
-                   Lotes.add(lote);//agregar lote al arraylist de lotes
-                    //despues aumenta para que busque de 5 en 5 en las posiciones del arraylist
-                    j+=4;
-                    h+=j+4;
-                }
-       */
-                
-                    
+    
+    SwingUtilities.updateComponentTreeUI(ventana);                
                     
       
        

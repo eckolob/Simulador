@@ -32,6 +32,14 @@ public class Lote{
         
         this.procesosLote = Procesos;
     }
+    
+    public void creaLote(int id, ArrayList <Proceso> Procesos){
+    	//Si creo un objeto y le paso estos parametros se ejecuta este metodo constuctor
+    	//Los atributos se inicializan con los valores que recibe como parametro
+        this.idLote= id; 
+        
+        this.procesosLote = Procesos;
+    }
  
     public int ObtenerIdLote() {
         return idLote;
