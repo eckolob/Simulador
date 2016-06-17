@@ -1,24 +1,31 @@
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
+import java.util.Timer;
+import java.util.TimerTask;
  
 public class Simulador {
  	Lote lote = new Lote();	
         Lote lotevacio=new Lote();
+        Proceso procesovacio=new Proceso();
         Proceso p=new Proceso();
         Interfaz ventana =new Interfaz();
+        
+   
+    int cuentat=0,unidadtme=0;
        
     boolean tal=false,error=false;
+  
     //Esta array list es para extraer los lotes de donde se almacenan y mostrarlos
     ArrayList <Proceso> temporal;
     //En estas array list se guardan los procesos y lotes
     ArrayList <Lote> Lotes;
-    ArrayList <Proceso> LoteTemporal;
+    ArrayList <Proceso> ProcesosTemporal;
     ArrayList <Proceso> Procesos;
-    int reloj;
+   
     int lotesreq=0;
     int num1,num2;
-    
+    int tmeactual=0;
   
     boolean termina=false;
       int id,tme,procesosrecibidos; String programador,resultado;
@@ -28,6 +35,7 @@ public class Simulador {
       String opcion="";
       
       
+    
       
       public Simulador()
       {
@@ -35,8 +43,8 @@ public class Simulador {
           Lotes= new ArrayList<> (); 
          Procesos= new ArrayList<> (); 
          temporal = new ArrayList();
-         LoteTemporal = new ArrayList();
-         
+         ProcesosTemporal = new ArrayList();
+        
          
       }
       
@@ -121,7 +129,7 @@ public class Simulador {
           cuentalotes=0;
        do{
                                
- 		reloj++;	
+ 		cuentat++;	
                               
                //Bloque para introducir datos al array list
                        
@@ -174,105 +182,131 @@ public class Simulador {
                         			
                         }
                  
+                        
+                         procesovacio = new Proceso();
+                        
                          Procesos.add(new Proceso(id,programador,tme,resultado));  
                         
                          cuentaprocesos++;//controla la asignacion de idlote
                          cuentaprocesos2++;//controla el while
-                          
-                         lote = new Lote((cuentalotes+1),Procesos);
-                          // lote.creaLote((cuentalotes+1),Procesos);
-                           
-                           if(cuentaprocesos==1)
+                         
+                          if(cuentaprocesos==1)//Si es el  proceso 1 de un Lote N
                            {
+                               //Agrego este lote vacio para que halla algo en la posicion 0 y no me arroje exepcion al querer 
+                               //poener algo en la posicion 0 con el metodo set(reemplazar)
                                Lotes.add(lotevacio);
                            }
                            
-                         //  Lotes.add(cuentalotes,lote);
-                           Lotes.set(cuentalotes, lote);
-                         if((cuentaprocesos%5)==0)                      
+                           if((cuentaprocesos%5)==0)                      
                                  {
-                                  
-                              Procesos.remove(p);
+                                     for(int z=0;z<Procesos.size();z++)
+                                     {
+                                         
+                                         ProcesosTemporal.add(z, Procesos.get(z));    
+                                     }
+                                    
+                                     lote = new Lote((cuentalotes+1),ProcesosTemporal);
+                                     Lotes.set(cuentalotes, lote);
+                                   //sin borrar array list de procesos como le digo que aguegue solo 5 procesos a cada bloque
+                                     //OK que de lista procesos me pase a otra lista solo los procesos correspondientes (5)
+                              
+                             // Procesos.remove(p);
                                //Procesos.subList(0, 5).clear();
                                  
                                    cuentalotes++;
                                    cuentaprocesos=0;
     
                                  }  
+                           else
+                           {
+                                lote = new Lote((cuentalotes+1),Procesos);
+                          // lote.creaLote((cuentalotes+1),Procesos);
+                           
+                          
+                         //  Lotes.add(cuentalotes,lote);
+                           Lotes.set(cuentalotes, lote);
+                           }
+                          
+                        
+                       
                        }
                                   
                          	
        }while(error!=true||termina!=true);
        
-      
+       ventana.Simular();
         }
  
-        public void MuestraProcesos()
+        
+        public void MostrarLoteActual()
         {
-            	
-       
-       
-    //Ver lote
-                           ventana.Simular();
-                           
-        if(Lotes.size()==0)//Si no se ha completado un lote con 5 procesos
-        {
-             for(int a=0;a<lote.procesosLote.size();a++)
-                             {
-                                 ventana.txt_programador.setText(lote.procesosLote.get(a).ObtenerProgramador());
-                         ventana.txt_idproceso2.setText(Integer.toString(lote.procesosLote.get(a).ObtenerId()));  
-                           ventana.txt_operacion.setText(lote.procesosLote.get(a).ObtenerOperacion());
-                           ventana.txt_tme2.setText(Integer.toString(lote.procesosLote.get(a).ObtenerTME()));
-                           //poner cuentaLotes
-                           ventana.txt_loteEjecutandose.setText(Integer.toString((Lotes.get(a).idLote)));
-                             //poner cuentaLotes
-                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(a).idLote));
-                           ventana.ta_loteTerminado.append("               "+lote.procesosLote.get(a).ObtenerOperacion()+"\t");
-                           ventana.ta_loteTerminado.append(Integer.toString(lote.procesosLote.get(a).ObtenerId()));
-                            ventana.ta_loteTerminado.append("\n");
-                            
-                            ventana.ta_loteActual.append("         "+(lote.procesosLote.get(a).ObtenerId())+"\t   "+(lote.procesosLote.get(a).ObtenerTME())+"\n"); 
-                           ventana.ta_loteActual.setLineWrap(true); 
-                           ventana.ta_loteActual.setWrapStyleWord(true);
-                             }
-        }
-                           
-                      //Mostrar lote completo
-                       for( int m = 0 ; m  < Lotes.size(); m++)
+             for( int m = 0 ; m  < Lotes.size(); m++)
                        {
                         Lotes.get(m).ObtenerIdLote();
                         temporal=Lotes.get(m).ObtenerProcesos();
                        }
-                       
-                         for( int i = 0 ; i  < Lotes.size(); i++)
+             
+               for( int i = 0 ; i  < Lotes.size(); i++)
                          {
                              for(int j=0;j<temporal.size();j++)
                              {
-                                 ventana.txt_programador.setText(temporal.get(j).ObtenerProgramador());
-                         ventana.txt_idproceso2.setText(Integer.toString(temporal.get(j).ObtenerId()));  
-                           ventana.txt_operacion.setText(temporal.get(j).ObtenerOperacion());
-                           ventana.txt_tme2.setText(Integer.toString(temporal.get(j).ObtenerTME()));
-                           
-                           ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
-                           
-                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
-                           ventana.ta_loteTerminado.append("               "+temporal.get(j).ObtenerOperacion()+"\t");
-                           ventana.ta_loteTerminado.append(Integer.toString(temporal.get(j).ObtenerId()));
-                            ventana.ta_loteTerminado.append("\n");
-                            
-                            ventana.ta_loteActual.append("         "+(temporal.get(j).ObtenerId())+"\t   "+(temporal.get(j).ObtenerTME())+"\n"); 
-                           ventana.ta_loteActual.setLineWrap(true); 
-                           ventana.ta_loteActual.setWrapStyleWord(true);
+                                 ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
+                                 ventana.ta_loteActual.append("         "+(temporal.get(j).ObtenerId())+"\t   "+(temporal.get(j).ObtenerTME())+"\n"); 
+                                 ventana.ta_loteActual.setLineWrap(true); 
+                                 ventana.ta_loteActual.setWrapStyleWord(true);
                              }
-                  
-                       }
-                            
-                            ventana.txt_reloj.setText(Integer.toString(reloj));
-                   
-    
-    SwingUtilities.updateComponentTreeUI(ventana);                
-                    
+                         }
+            
         }
+        
+         public void MostrarProcesoActual()
+        {
+             for( int m = 0 ; m  < Lotes.size(); m++)
+                       {
+                        Lotes.get(m).ObtenerIdLote();
+                        temporal=Lotes.get(m).ObtenerProcesos();
+                       }
+             
+                           if(unidadtme<5)
+                           {
+                               ventana.txt_programador.setText(temporal.get(unidadtme).ObtenerProgramador());
+                                 ventana.txt_idproceso2.setText(Integer.toString(temporal.get(unidadtme).ObtenerId()));  
+                                 ventana.txt_operacion.setText(temporal.get(unidadtme).ObtenerOperacion());
+                                 ventana.txt_tme2.setText(Integer.toString(temporal.get(unidadtme).ObtenerTME()));
+                                tmeactual= (temporal.get(unidadtme).ObtenerTME());
+                           }
+                                 
+ 
+        }
+         
+          public void MostrarLoteTerminado()
+        {
+             for( int m = 0 ; m  < Lotes.size(); m++)
+                       {
+                        Lotes.get(m).ObtenerIdLote();
+                        temporal=Lotes.get(m).ObtenerProcesos();
+                       }
+             for( int i = 0 ; i  < Lotes.size(); i++)
+                         {
+                             for(int j=0;j<temporal.size();j++)
+                             {
+                                ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
+                                ventana.ta_loteTerminado.append("               "+temporal.get(j).ObtenerOperacion()+"\t");
+                                ventana.ta_loteTerminado.append(Integer.toString(temporal.get(j).ObtenerId()));
+                                ventana.ta_loteTerminado.append("\n");
+                                    }
+                         }
+        }
+         
+        
+          
+          public void MostrarReloj()
+          {
+               ventana.txt_reloj.setText(Integer.toString(cuentat));
+          }
+        //esto es disque  para actualizar la ventana
+             //SwingUtilities.updateComponentTreeUI(ventana);  
+       
         
    
  
@@ -302,8 +336,39 @@ public class Simulador {
     } 
     	
     	public static void main(String args[]){
-       Simulador objeto = new Simulador();
-        objeto.IngresaProcesos();
-        objeto.MuestraProcesos();
+       
+               Timer reloj = new Timer();
+               Simulador objeto = new Simulador();
+               objeto.IngresaProcesos();
+               objeto.MostrarLoteActual();
+               objeto.MostrarProcesoActual();
+                 
+         TimerTask tarea=new TimerTask()
+         {
+      @Override
+             public void run()
+             {
+                
+                 objeto.cuentat++;
+                 
+                 
+                 //Cada que pasen 3 segundos es una unidadtme
+                 if(objeto.cuentat%3==0)
+                 {
+                     
+                     objeto.unidadtme++;
+                     if(objeto.unidadtme==objeto.tmeactual)
+                     {
+                         objeto.MostrarProcesoActual();
+                     }
+                     
+                  
+                 }
+                 
+                 
+             }
+                 
+         };
+              reloj.schedule(tarea,10,1000); 
     }   
 }
