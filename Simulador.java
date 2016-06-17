@@ -1,4 +1,3 @@
-
 import java.util.ArrayList;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
@@ -104,10 +103,11 @@ public class Simulador {
 		resultado=""+n1+" ^ "+n2+" = "+potencia;
 		return  resultado;	
 	}
- 
-    public void menu(){
-  
-    	int cuentaprocesos2=0;
+        
+        
+        public void IngresaProcesos()
+        {
+            int cuentaprocesos2=0;
        int cuentaprocesos=0;
       int cuentalotes;
         
@@ -179,7 +179,8 @@ public class Simulador {
                          cuentaprocesos++;//controla la asignacion de idlote
                          cuentaprocesos2++;//controla el while
                           
-                           lote.creaLote((cuentalotes+1),Procesos);
+                         lote = new Lote((cuentalotes+1),Procesos);
+                          // lote.creaLote((cuentalotes+1),Procesos);
                            
                            if(cuentaprocesos==1)
                            {
@@ -191,28 +192,24 @@ public class Simulador {
                          if((cuentaprocesos%5)==0)                      
                                  {
                                   
-                            //  Procesos.remove(p);
+                              Procesos.remove(p);
                                //Procesos.subList(0, 5).clear();
                                  
                                    cuentalotes++;
                                    cuentaprocesos=0;
-                                  
-                                   //tambien borra el lote en la arraylistLotes, y no quiero que lo borre
-                                   
-                                   //Tomar en cuent22a lo que dijo michel sobre esto
-                                   //NoLotes.add(new Vector<informacionProceso>());
-//si te fijas al agregar el vector nuevo le pongo new para que no copie la referencia y sea un objeto nuevo
-                                   //Cuando borro el arraylistprocesos se borran los procesos de ese arraylist que ya habia guardado en otro array
-                                  //intentar con metodo subList(int fromIndex, int toIndex) 
-                                   //http://docs.oracle.com/javase/7/docs/api/java/util/ArrayList.html#method_summary
-                                   
-                                 }
-        
-                         
+    
+                                 }  
                        }
                                   
                          	
        }while(error!=true||termina!=true);
+       
+      
+        }
+ 
+        public void MuestraProcesos()
+        {
+            	
        
        
     //Ver lote
@@ -227,9 +224,9 @@ public class Simulador {
                            ventana.txt_operacion.setText(lote.procesosLote.get(a).ObtenerOperacion());
                            ventana.txt_tme2.setText(Integer.toString(lote.procesosLote.get(a).ObtenerTME()));
                            //poner cuentaLotes
-                           ventana.txt_loteEjecutandose.setText(Integer.toString(cuentalotes));
+                           ventana.txt_loteEjecutandose.setText(Integer.toString((Lotes.get(a).idLote)));
                              //poner cuentaLotes
-                           ventana.ta_loteTerminado.append(Integer.toString(cuentalotes));
+                           ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(a).idLote));
                            ventana.ta_loteTerminado.append("               "+lote.procesosLote.get(a).ObtenerOperacion()+"\t");
                            ventana.ta_loteTerminado.append(Integer.toString(lote.procesosLote.get(a).ObtenerId()));
                             ventana.ta_loteTerminado.append("\n");
@@ -275,11 +272,9 @@ public class Simulador {
     
     SwingUtilities.updateComponentTreeUI(ventana);                
                     
-      
-       
-       
-       
-    }
+        }
+        
+   
  
     public boolean existeEnArray(int bus){
  
@@ -308,6 +303,7 @@ public class Simulador {
     	
     	public static void main(String args[]){
        Simulador objeto = new Simulador();
-        objeto.menu();
+        objeto.IngresaProcesos();
+        objeto.MuestraProcesos();
     }   
 }
