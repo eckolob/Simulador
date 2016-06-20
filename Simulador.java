@@ -12,7 +12,7 @@ public class Simulador {
         Interfaz ventana =new Interfaz();
         
    
-    int cuentat=0,unidadtme=0;
+    int cuentat=0,unidadtme=0,j=0,relojglobal=0;;
        
     boolean tal=false,error=false;
   
@@ -261,20 +261,58 @@ public class Simulador {
         
          public void MostrarProcesoActual()
         {
+                
+            Timer relojProcesos = new Timer();
              for( int m = 0 ; m  < Lotes.size(); m++)
                        {
                         Lotes.get(m).ObtenerIdLote();
                         temporal=Lotes.get(m).ObtenerProcesos();
                        }
-             
-                           if(unidadtme<5)
-                           {
-                               ventana.txt_programador.setText(temporal.get(unidadtme).ObtenerProgramador());
-                                 ventana.txt_idproceso2.setText(Integer.toString(temporal.get(unidadtme).ObtenerId()));  
-                                 ventana.txt_operacion.setText(temporal.get(unidadtme).ObtenerOperacion());
-                                 ventana.txt_tme2.setText(Integer.toString(temporal.get(unidadtme).ObtenerTME()));
-                                tmeactual= (temporal.get(unidadtme).ObtenerTME());
-                           }
+                       
+              TimerTask mostrarproceso=new TimerTask()
+         {
+          @Override
+             public void run()
+             {
+               
+                 cuentat++;
+                 
+               
+                 //Cada que pasen 3 segundos es una unidadtme
+                 if(cuentat%3==0)
+                 {                
+                     
+                     unidadtme++;
+                     if(j!=temporal.size()) //Para que no trate de acceder a una posicion que no existe
+                     {
+                         tmeactual= (temporal.get(j).ObtenerTME());
+                     ventana.txt_programador.setText(temporal.get(j).ObtenerProgramador());
+                                 ventana.txt_idproceso2.setText(Integer.toString(temporal.get(j).ObtenerId()));  
+                                 ventana.txt_operacion.setText(temporal.get(j).ObtenerOperacion());
+                                 ventana.txt_tme2.setText(Integer.toString(temporal.get(j).ObtenerTME()));
+                                 tme=temporal.get(j).ObtenerTME();
+                                 ventana.txt_tr.setText(Integer.toString(tme-(unidadtme))); 
+                                 ventana.txt_tt.setText(Integer.toString(unidadtme));
+                                  if(tmeactual==unidadtme)
+                                 {
+                                     j++;
+                                     unidadtme=0;
+                                     
+                                     
+                                 } 
+                     }
+                    
+                        
+                 }
+                 
+            
+             }
+                 
+         };
+              relojProcesos.scheduleAtFixedRate(mostrarproceso,1,500); 
+              
+         
+                           
                                  
  
         }
@@ -302,7 +340,7 @@ public class Simulador {
           
           public void MostrarReloj()
           {
-               ventana.txt_reloj.setText(Integer.toString(cuentat));
+               ventana.txt_reloj.setText(Integer.toString(relojglobal));
           }
         //esto es disque  para actualizar la ventana
              //SwingUtilities.updateComponentTreeUI(ventana);  
@@ -337,38 +375,42 @@ public class Simulador {
     	
     	public static void main(String args[]){
        
-               Timer reloj = new Timer();
+                            
+            Timer relojGlobal = new Timer();
                Simulador objeto = new Simulador();
                objeto.IngresaProcesos();
                objeto.MostrarLoteActual();
                objeto.MostrarProcesoActual();
-                 
-         TimerTask tarea=new TimerTask()
+                
+                   
+       
+            
+                       
+              TimerTask mostrarRelojGlobal=new TimerTask()
          {
-      @Override
+          @Override
              public void run()
              {
-                
-                 objeto.cuentat++;
+             
                  
-                 
-                 //Cada que pasen 3 segundos es una unidadtme
                  if(objeto.cuentat%3==0)
-                 {
-                     
-                     objeto.unidadtme++;
-                     if(objeto.unidadtme==objeto.tmeactual)
-                     {
-                         objeto.MostrarProcesoActual();
-                     }
-                     
-                  
+                 {  
+                     objeto.relojglobal++;
+                     objeto.MostrarReloj(); 
+                    
                  }
-                 
-                 
+              
              }
+               
+               
                  
          };
-              reloj.schedule(tarea,10,1000); 
-    }   
+              relojGlobal.schedule(mostrarRelojGlobal,1,500); 
+              
+               
+                 
+       
+    
 }
+
+                      }
