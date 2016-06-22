@@ -12,7 +12,7 @@ public class Simulador {
         Interfaz ventana =new Interfaz();
         
    
-    int cuentat=0,unidadtme=0,j=0,relojglobal=0;;
+    int cuentat=0,unidadtme=0,j=0,k=0,relojglobal=0;
        
     boolean tal=false,error=false;
   
@@ -118,6 +118,7 @@ public class Simulador {
             int cuentaprocesos2=0;
        int cuentaprocesos=0;
       int cuentalotes;
+      int sumatme=0;
         
     	
         String op;
@@ -156,8 +157,18 @@ public class Simulador {
                         {
                             
                         programador = JOptionPane.showInputDialog(null, "Programador: ");
+                        
+                       
                         tme = Integer.parseInt(JOptionPane.showInputDialog(null, "TME: "));
-
+                        
+                               while(tme<=0)
+                                {
+                                     JOptionPane.showMessageDialog(null, "EL tme debe ser mayor a cero", "Error en TME", JOptionPane.ERROR_MESSAGE);
+                                     tme = Integer.parseInt(JOptionPane.showInputDialog(null, "TME: "));
+                                }
+                            
+                        sumatme+=tme;
+                        
                         num1 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
                         num2 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
                        opcion = JOptionPane.showInputDialog(null, "1)Suma\n2)Resta\n3)Multiplicacion\n4)Division\n5)Residuo\n6)Potencia: ");
@@ -196,7 +207,7 @@ public class Simulador {
                                //poener algo en la posicion 0 con el metodo set(reemplazar)
                                Lotes.add(lotevacio);
                            }
-                           
+                          
                            if((cuentaprocesos%5)==0)                      
                                  {
                                      for(int z=0;z<Procesos.size();z++)
@@ -205,8 +216,10 @@ public class Simulador {
                                          ProcesosTemporal.add(z, Procesos.get(z));    
                                      }
                                     
-                                     lote = new Lote((cuentalotes+1),ProcesosTemporal);
+                                    
+                                     lote = new Lote((cuentalotes+1),ProcesosTemporal,sumatme);
                                      Lotes.set(cuentalotes, lote);
+                                     
                                    //sin borrar array list de procesos como le digo que aguegue solo 5 procesos a cada bloque
                                      //OK que de lista procesos me pase a otra lista solo los procesos correspondientes (5)
                               
@@ -215,11 +228,13 @@ public class Simulador {
                                  
                                    cuentalotes++;
                                    cuentaprocesos=0;
+                                   sumatme=0;
     
                                  }  
                            else
                            {
-                                lote = new Lote((cuentalotes+1),Procesos);
+                         
+                                lote = new Lote((cuentalotes+1),Procesos,sumatme);
                           // lote.creaLote((cuentalotes+1),Procesos);
                            
                           
@@ -238,36 +253,14 @@ public class Simulador {
         }
  
         
-        public void MostrarLoteActual()
-        {
-             for( int m = 0 ; m  < Lotes.size(); m++)
-                       {
-                        Lotes.get(m).ObtenerIdLote();
-                        temporal=Lotes.get(m).ObtenerProcesos();
-                       }
-             
-               for( int i = 0 ; i  < Lotes.size(); i++)
-                         {
-                             for(int j=0;j<temporal.size();j++)
-                             {
-                                 ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(i).idLote));
-                                 ventana.ta_loteActual.append("         "+(temporal.get(j).ObtenerId())+"\t   "+(temporal.get(j).ObtenerTME())+"\n"); 
-                                 ventana.ta_loteActual.setLineWrap(true); 
-                                 ventana.ta_loteActual.setWrapStyleWord(true);
-                             }
-                         }
-            
-        }
+      
         
          public void MostrarProcesoActual()
         {
                 
             Timer relojProcesos = new Timer();
-             for( int m = 0 ; m  < Lotes.size(); m++)
-                       {
-                        Lotes.get(m).ObtenerIdLote();
-                        temporal=Lotes.get(m).ObtenerProcesos();
-                       }
+            
+              
                        
               TimerTask mostrarproceso=new TimerTask()
          {
@@ -276,30 +269,69 @@ public class Simulador {
              {
                
                  cuentat++;
-                 
+              
                
                  //Cada que pasen 3 segundos es una unidadtme
                  if(cuentat%3==0)
-                 {                
+                         
+                 {           
+                      if( k< Lotes.size())
+                       {
+                        Lotes.get(k).ObtenerIdLote();
+                        temporal=Lotes.get(k).ObtenerProcesos();
+                         for(int a=0;a<temporal.size();a++)
+                                     {
+                                      ventana.ta_loteActual.append("         "+(temporal.get(a).ObtenerId())+"\t   "+(temporal.get(a).ObtenerTME())+"\n"); 
+                                      ventana.ta_loteActual.setLineWrap(true); 
+                                      ventana.ta_loteActual.setWrapStyleWord(true);
+                                     }
+                       }
                      
                      unidadtme++;
+                     relojglobal++;
                      if(j!=temporal.size()) //Para que no trate de acceder a una posicion que no existe
                      {
+                         
+                         ventana.txt_loteEjecutandose.setText(Integer.toString(Lotes.get(k).idLote));
+                         
+                                 
+                         
                          tmeactual= (temporal.get(j).ObtenerTME());
-                     ventana.txt_programador.setText(temporal.get(j).ObtenerProgramador());
+                                 ventana.txt_programador.setText(temporal.get(j).ObtenerProgramador());
                                  ventana.txt_idproceso2.setText(Integer.toString(temporal.get(j).ObtenerId()));  
                                  ventana.txt_operacion.setText(temporal.get(j).ObtenerOperacion());
                                  ventana.txt_tme2.setText(Integer.toString(temporal.get(j).ObtenerTME()));
                                  tme=temporal.get(j).ObtenerTME();
                                  ventana.txt_tr.setText(Integer.toString(tme-(unidadtme))); 
                                  ventana.txt_tt.setText(Integer.toString(unidadtme));
+                                 
+                                  ventana.txt_reloj.setText(Integer.toString(relojglobal));
+                                 
+                                 
+                                if(Lotes.get(k).tmelote==relojglobal)
+                                {
+                                    for(int b=0;b<temporal.size();b++)
+                                    {
+                                      ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(k).idLote));
+                                      ventana.ta_loteTerminado.append("               "+temporal.get(b).ObtenerOperacion()+"\t");
+                                      ventana.ta_loteTerminado.append(Integer.toString(temporal.get(b).ObtenerId()));
+                                      ventana.ta_loteTerminado.append("\n");
+                                 
+                                    }
+                                k++;
+                                }
+                                 
+                                    
+                               
                                   if(tmeactual==unidadtme)
                                  {
+                                   
+                                     
                                      j++;
-                                     unidadtme=0;
-                                     
-                                     
-                                 } 
+                                     unidadtme=0;  
+                                    
+                                 }            
+                                  
                      }
                     
                         
@@ -316,25 +348,7 @@ public class Simulador {
                                  
  
         }
-         
-          public void MostrarLoteTerminado()
-        {
-             for( int m = 0 ; m  < Lotes.size(); m++)
-                       {
-                        Lotes.get(m).ObtenerIdLote();
-                        temporal=Lotes.get(m).ObtenerProcesos();
-                       }
-             for( int i = 0 ; i  < Lotes.size(); i++)
-                         {
-                             for(int j=0;j<temporal.size();j++)
-                             {
-                                ventana.ta_loteTerminado.append(Integer.toString(Lotes.get(i).idLote));
-                                ventana.ta_loteTerminado.append("               "+temporal.get(j).ObtenerOperacion()+"\t");
-                                ventana.ta_loteTerminado.append(Integer.toString(temporal.get(j).ObtenerId()));
-                                ventana.ta_loteTerminado.append("\n");
-                                    }
-                         }
-        }
+      
          
         
           
@@ -376,36 +390,15 @@ public class Simulador {
     	public static void main(String args[]){
        
                             
-            Timer relojGlobal = new Timer();
+           
                Simulador objeto = new Simulador();
                objeto.IngresaProcesos();
-               objeto.MostrarLoteActual();
+            
                objeto.MostrarProcesoActual();
-                
+              
                    
        
-            
-                       
-              TimerTask mostrarRelojGlobal=new TimerTask()
-         {
-          @Override
-             public void run()
-             {
-             
-                 
-                 if(objeto.cuentat%3==0)
-                 {  
-                     objeto.relojglobal++;
-                     objeto.MostrarReloj(); 
-                    
-                 }
-              
-             }
-               
-               
-                 
-         };
-              relojGlobal.schedule(mostrarRelojGlobal,1,500); 
+          
               
                
                  
