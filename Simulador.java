@@ -11,8 +11,8 @@ public class Simulador {
         Proceso p=new Proceso();
         Interfaz ventana =new Interfaz();
         
-   
-    int cuentat=0,unidadtme=0,j=0,k=0,relojglobal=0;
+    int milisegundos= 250;
+    int cuentat=0,unidadtme=0,j=0,k=0,relojLote=0,relojGlobal=0;
        
     boolean tal=false,error=false;
   
@@ -169,7 +169,8 @@ public class Simulador {
                             
                         sumatme+=tme;
                         
-                        num1 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
+
+        num1 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
                         num2 = Integer.parseInt(JOptionPane.showInputDialog(null, "Numero: "));
                        opcion = JOptionPane.showInputDialog(null, "1)Suma\n2)Resta\n3)Multiplicacion\n4)Division\n5)Residuo\n6)Potencia: ");
                         switch(opcion)
@@ -178,7 +179,7 @@ public class Simulador {
 
                                case "1":resultado=Sumar(num1,num2);
                         		break;
-                        	case "2":resultado=Restar(num1,num2);
+                         	case "2":resultado=Restar(num1,num2);
                         		break;
                         	case "3":resultado=Multiplicar(num1,num2);
                         		break;
@@ -195,7 +196,7 @@ public class Simulador {
                  
                         
                          procesovacio = new Proceso();
-                        
+                       
                          Procesos.add(new Proceso(id,programador,tme,resultado));  
                         
                          cuentaprocesos++;//controla la asignacion de idlote
@@ -216,16 +217,18 @@ public class Simulador {
                                          ProcesosTemporal.add(z, Procesos.get(z));    
                                      }
                                     
-                                    
-                                     lote = new Lote((cuentalotes+1),ProcesosTemporal,sumatme);
+                                    //EL ERROR EN EJECUCION EN TME LOTE SE DEBE A QUE EN EL SEGUNDO LOTE AL PROCESO CON ID 6 LE ASGINO UN TME 6
+                                     //Y EL LOTE SE CREA CON EL TME DE ESE PROCESO, PERO EN REALIDAD SE LE AGREGA ESE PROCESO Y  LOS PROCESOS DEL LOTE ANTERIOR
+                                     lote = new Lote((cuentalotes+1),Procesos,sumatme);
                                      Lotes.set(cuentalotes, lote);
-                                     
+                                       Procesos = new ArrayList();
                                    //sin borrar array list de procesos como le digo que aguegue solo 5 procesos a cada bloque
-                                     //OK que de lista procesos me pase a otra lista solo los procesos correspondientes (5)
+                                     //OK6
+                                      // que de lista procesos me pase a otra lista solo los procesos correspondientes (5)
                               
                              // Procesos.remove(p);
-                               //Procesos.subList(0, 5).clear();
-                                 
+                              // Procesos.subList(0, 5).clear();
+                             
                                    cuentalotes++;
                                    cuentaprocesos=0;
                                    sumatme=0;
@@ -260,9 +263,11 @@ public class Simulador {
                 
             Timer relojProcesos = new Timer();
             
-              
+            
                        
               TimerTask mostrarproceso=new TimerTask()
+                             
+                      
          {
           @Override
              public void run()
@@ -274,21 +279,29 @@ public class Simulador {
                  //Cada que pasen 3 segundos es una unidadtme
                  if(cuentat%3==0)
                          
-                 {           
-                      if( k< Lotes.size())
+                 {    
+                       if( k< Lotes.size())
                        {
                         Lotes.get(k).ObtenerIdLote();
                         temporal=Lotes.get(k).ObtenerProcesos();
+                        String LA="";
                          for(int a=0;a<temporal.size();a++)
                                      {
-                                      ventana.ta_loteActual.append("         "+(temporal.get(a).ObtenerId())+"\t   "+(temporal.get(a).ObtenerTME())+"\n"); 
+                                       LA +=    ((temporal.get(a).ObtenerId()))+"\t   "+(temporal.get(a).ObtenerTME())+"\n";
+ 
+                                     }
+                                      ventana.ta_loteActual.setText(LA); 
                                       ventana.ta_loteActual.setLineWrap(true); 
                                       ventana.ta_loteActual.setWrapStyleWord(true);
-                                     }
                        }
                      
                      unidadtme++;
-                     relojglobal++;
+                     relojLote++;
+                     relojGlobal++;
+                    if(k< Lotes.size()) 
+                    {
+                        
+                    
                      if(j!=temporal.size()) //Para que no trate de acceder a una posicion que no existe
                      {
                          
@@ -305,10 +318,18 @@ public class Simulador {
                                  ventana.txt_tr.setText(Integer.toString(tme-(unidadtme))); 
                                  ventana.txt_tt.setText(Integer.toString(unidadtme));
                                  
-                                  ventana.txt_reloj.setText(Integer.toString(relojglobal));
+                                  ventana.txt_reloj.setText(Integer.toString(relojGlobal));
+                                  
+                                  if(tmeactual==unidadtme)
+                                 {                   
+                                     j++;
+                                     unidadtme=0;  
+                                    
+                                 } 
+                                  
                                  
-                                 
-                                if(Lotes.get(k).tmelote==relojglobal)
+                                 //LOTES TERMINADOS
+                                if(Lotes.get(k).tmelote==relojLote)
                                 {
                                     for(int b=0;b<temporal.size();b++)
                                     {
@@ -318,44 +339,23 @@ public class Simulador {
                                       ventana.ta_loteTerminado.append("\n");
                                  
                                     }
+                                j=0;    
                                 k++;
-                                }
-                                 
-                                    
-                               
-                                  if(tmeactual==unidadtme)
-                                 {
-                                   
-                                     
-                                     j++;
-                                     unidadtme=0;  
-                                    
-                                 }            
-                                  
-                     }
-                    
-                        
-                 }
-                 
-            
-             }
-                 
+                                relojLote=0;
+                                }                
+                     }    
+                   }
+                     
+                 }  
+             }            
          };
-              relojProcesos.scheduleAtFixedRate(mostrarproceso,1,500); 
-              
-         
-                           
-                                 
- 
+              relojProcesos.scheduleAtFixedRate(mostrarproceso,1,milisegundos); 
         }
       
          
         
           
-          public void MostrarReloj()
-          {
-               ventana.txt_reloj.setText(Integer.toString(relojglobal));
-          }
+        
         //esto es disque  para actualizar la ventana
              //SwingUtilities.updateComponentTreeUI(ventana);  
        
