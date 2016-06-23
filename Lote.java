@@ -4,6 +4,7 @@ public class Lote{
  
 	int capacidad=5;
 	int lotesRequeridos;
+        int tmelote;
       ArrayList <Proceso> procesosLote;
     
     //Datos de entrada
@@ -25,11 +26,20 @@ public class Lote{
         procesosLote = new  ArrayList();
     } 
   
-    public Lote(int id, ArrayList <Proceso> Procesos){
+    public Lote(int id, ArrayList <Proceso> Procesos,int t){
     	//Si creo un objeto y le paso estos parametros se ejecuta este metodo constuctor
     	//Los atributos se inicializan con los valores que recibe como parametro
         this.idLote= id; 
-        
+          this.tmelote=t;
+        this.procesosLote = Procesos;
+    }
+    
+    public void creaLote(int id, ArrayList <Proceso> Procesos,int t){
+    	//Si creo un objeto y le paso estos parametros se ejecuta este metodo constuctor
+    	//Los atributos se inicializan con los valores que recibe como parametro
+        this.idLote= id; 
+      
+         this.tmelote=t;
         this.procesosLote = Procesos;
     }
  
@@ -37,7 +47,15 @@ public class Lote{
         return idLote;
     }
  
-   
+    public void AsignarTmeLote(int t)
+    {
+        this.tmelote=t;
+    }
+    
+   public int ObtenertmeLote()
+   {
+       return tmelote;
+   }
     
     public void ObtenerLotesPendientes() {
         //determinar que recibira y que retornara
