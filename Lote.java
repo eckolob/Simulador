@@ -16,6 +16,7 @@ public class Lote{
     //Datos de salida
     int lotesPendientes;
     int idLote;
+     boolean nuevo,listo,ejecucion,terminado,bloqueado;
     //id lote identificara el lote en ejecucion, el cual tendra sus 5 procesos asignados y aumentara cada que el idprocesos cuente 5 procesos
 	//
     public Lote()
@@ -24,6 +25,11 @@ public class Lote{
     	//Los atributos se inicializan con los valores por defecto del sistema
        
         procesosLote = new  ArrayList();
+        nuevo=false;
+        listo=false;
+        ejecucion=false;
+        terminado=false;
+        bloqueado=false;
     } 
   
     public Lote(int id, ArrayList <Proceso> Procesos,int t){
@@ -32,6 +38,11 @@ public class Lote{
         this.idLote= id; 
           this.tmelote=t;
         this.procesosLote = Procesos;
+        nuevo=false;
+        listo=false;
+        ejecucion=false;
+        terminado=false;
+        bloqueado=false;
     }
     
     public void creaLote(int id, ArrayList <Proceso> Procesos,int t){
@@ -92,7 +103,36 @@ public class Lote{
 	   return lotesRequeridos; 
 	} 
 		
-        
+        public boolean ObtenerEstadoNuevo()
+    {
+        return nuevo;
+    }
+    public boolean ObtenerEstadoListo()
+    {
+        return listo;
+    }
+    public boolean ObtenerEstadoEjecucion()
+    {
+        return ejecucion;
+    }
+    public boolean ObtenerEstadoTerminado()
+    {
+        return terminado;
+    }
+    public boolean ObtenerEstadoBloqueado()
+    {
+        return bloqueado;
+    }
+    
+
+public void AsignarEstado(boolean n,boolean l,boolean e,boolean t,boolean b)
+{
+     this.nuevo=n;
+     this.listo=l;
+     this.ejecucion=e;
+     this.terminado=t;
+     this.bloqueado=b;
+}
         
         
 		
