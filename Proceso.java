@@ -73,6 +73,11 @@ public class Proceso{
         this.tt=y;
     }
     
+    public int ObtenerTT()
+    {
+    	return tt;
+    }
+    
     public String ObtenerOperacion()
     {
     	return operacion;

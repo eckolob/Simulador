@@ -61,7 +61,8 @@ public class Interfaz extends JFrame implements KeyListener{
         ventana.add(et_tecla);
         
         txt_tecla = new JTextField();
-        txt_tecla.setBounds(x+70,240,40,20);
+        txt_tecla.setBounds(x+70,240,20,20);
+        txt_tecla.setEditable(false);
         txt_tecla.addKeyListener(this);
         ventana.add(txt_tecla);
         
@@ -276,7 +277,7 @@ public class Interfaz extends JFrame implements KeyListener{
 
     @Override
     public void keyTyped(KeyEvent e) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        //throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -312,7 +313,7 @@ public class Interfaz extends JFrame implements KeyListener{
                 I_c=true;
              }
          }
-         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        // throw new UnsupportedOperationException("Not supported yet"); //To change body of generated methods, choose Tools | Templates.
     }
 
     @Override
@@ -322,7 +323,7 @@ public class Interfaz extends JFrame implements KeyListener{
         I_w=false;
         I_p=false;
         I_c=false;
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+      //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     
     

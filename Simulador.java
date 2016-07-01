@@ -15,15 +15,17 @@ public class Simulador {
         
         ArrayList <Proceso> ProcesosNuevos;
         ArrayList <Proceso> Memoria;
-         ArrayList <Proceso> ProcesosTerminados;
-        
+        ArrayList <Proceso> ProcesosTerminados;
+         ArrayList <Proceso> ProcesosBloqueados;
+        ArrayList <Integer> relojBloqueados;
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 50;
-        int cuentat=0,unidadtme=0,j=0,k=0,relojGlobal=0;
+        int milisegundos= 300;
+        int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
+        boolean rej=false;
   
   
   
@@ -48,8 +50,9 @@ public class Simulador {
          Memoria= new ArrayList<> (); 
          ProcesosNuevos = new ArrayList();
          ProcesosTerminados = new ArrayList();
+         ProcesosBloqueados = new ArrayList();
          aleatorio = new Random();
-        
+         relojBloqueados = new ArrayList();
          
       }
       
@@ -144,7 +147,8 @@ public class Simulador {
                         
                      id = cuentaprocesos2+1 ;
        
-                        tr= tme = aleatorio.nextInt(30) ;
+                        tme = aleatorio.nextInt(30)+ 1 ;
+                        tr=tme;
                                while(tme<=0)
                                 {                       
                                       tme = aleatorio.nextInt(30);
@@ -307,28 +311,79 @@ public class Simulador {
                             }
                                    
                                      
-                                     
+                                 
                          if(ventana.I_e==true)
                          {
                          //Despues de esta interrupcion el tr pasa a ser la referencia 
                          //Al presionar E guarda el tiempo que le resta a el proceso  
-                             Memoria.get(j).AsignarTR(tme-(unidadtme));          
-                             Memoria.add(Memoria.get(j));
+                            Memoria.get(j).AsignarTR(tme-(unidadtme));   
+                                                             //nuevo,listo,ejecucion,terminado,bloqueado
+                            Memoria.get(j).AsignarEstado(false, false, false,   false,    true);
+                            ProcesosBloqueados.add(Memoria.get(j));
+                            relojBloqueados.add(0);
+                            ProcesosBloqueados.get(ProcesosBloqueados.size()-1).AsignarTT(relojBloqueados.get(relojBloqueados.size()-1));
+                            
+                            
                              //borralo de la posicion actual
-                               Memoria.remove(Memoria.get(j));
+                               Memoria.remove(Memoria.get(j));    
                                unidadtme=0;
                             
                          }
                                       
+                                 
+                         
+                         //PROCESOS BLOQUEADOS           
+                        
+                         if(!ProcesosBloqueados.isEmpty())
+                         {
+                             
+                            for(int d=0;d<ProcesosBloqueados.size();d++)
+                            {
+                                relojAux = relojBloqueados.get(d);
+                                relojAux++;                     
+                                ProcesosBloqueados.get(d).AsignarTT(relojBloqueados.set(d,relojAux));
+                            }
+                             
+                          String PB="";
+                       
+                          
+                         for(int a=0;a<ProcesosBloqueados.size();a++)
+                                     {                               
+                                       PB +=(ProcesosBloqueados.get(a).ObtenerId())+"     "+(ProcesosBloqueados.get(a).ObtenerTT())+"\n";                     
+                                     }
+                          //Mostrar los procesos listos
+                                      ventana.ta_procesosBloqueados.setText(PB); 
+                                      ventana.ta_procesosBloqueados.setLineWrap(true); 
+                                      ventana.ta_procesosBloqueados.setWrapStyleWord(true);
                                       
+                                      for(int z=0;z<ProcesosBloqueados.size();z++)
+                                      {
+                                           if((ProcesosBloqueados.get(z).ObtenerTT())==10)
+                                      {
+                                          Memoria.add(ProcesosBloqueados.get(z));
+                                          ProcesosBloqueados.remove(ProcesosBloqueados.get(z));
+                                          relojBloqueados.remove(relojBloqueados.get(z));
+                                          
+                                         
+                                      }
+                                      }
                                       
+                                     
+                         }
+                         
+                         
+                        
+                        
+                         
+                         
+                         
                                   //TRANSICION DE EJECUCION A TERMINADO
                                   //El atributo TR cambia disminuye solo visualmente, pero solo cambia su valor dentro del proceso en caso de interrupcion E
-                                  if( Memoria.get(j).ObtenerTR()==unidadtme||ventana.I_w==true)
+                        if( Memoria.get(j).ObtenerTR()==unidadtme||ventana.I_w==true)
                                  {              
                                         Memoria.get(j).AsignarTR(0);    
                                                                              //nuevo,listo,ejecucion,terminado,bloqueado
-                                Memoria.get(j).AsignarEstado(false, false, false,   true,    false);
+                                         Memoria.get(j).AsignarEstado(false, false, false,   true,    false);
                                 
                                                             
                                          procesoTerminado = Memoria.get(j).ObtenerEstadoTerminado();
@@ -337,43 +392,39 @@ public class Simulador {
                                             cuentaterminados++; 
                                           }        
                                     
-                             //Cada que termine un proceso, agregalo a la lista de terminados, borralo de memoria y muestralo desde terminados
-                                         
+                                     //Cada que termine un proceso, agregalo a la lista de terminados, borralo de memoria y muestralo desde terminados
+                                    if( !Memoria.isEmpty())
+                                    {                             
                                         ProcesosTerminados.add(Memoria.get(j));
                                         Memoria.remove(Memoria.get(j));
-                                       
+                                    }  
                                          ventana.ta_procesosTerminados.append(Integer.toString(ProcesosTerminados.get(cuentaterminados-1).ObtenerId()));
                                          ventana.ta_procesosTerminados.append("        "+ProcesosTerminados.get(cuentaterminados-1).ObtenerOperacion());
                                          ventana.ta_procesosTerminados.append("\n");
                                         
-                                      
-                                      //Pasate al otro proceso
-                                     j++;
+                                         
+                                     //Tambien cada que termina un proceso, debe entrar un proceso nuevo a memoria, 
+                                         //y quitarlo de nuevos, siempre y cuando la suma de procesos en los estados bloqueado, listo y ejecucion sean menos de 5   
+                                         if(!ProcesosNuevos.isEmpty())
+                                         {                             
+                                          if(Memoria.size()+ProcesosBloqueados.size()<5)
+                                          {
+                                            Memoria.add(ProcesosNuevos.get(0));
+                                            ProcesosNuevos.remove(ProcesosNuevos.get(0));
+                                          }
+                                          
+                                         }
+                                      //J se pasa al otro proceso aunque siga siendo el mismo valor, porque ya se elminino el proceso en esa poscicion                                
                                      //Empieza a contar otra vez
                                      unidadtme=0;  
-                                     
-                                     
-                                   
-                                    
+                                
                                  }
                                   
-                                  
-                                  
-                                 //LOTES TERMINADOS
-                               
-                                   if(cuentaterminados==5)  //Solo hasta que los 5 procesos terminen por alguna razon,pasa algo jeje
-                                {                            
-                                j=0;    
-                                k++;
-                                ventana.txt_procesosPendientes.setText(Integer.toString(Memoria.size()));
-                                cuentaterminados=0;
-                                
-                                }           
-                                
+                    
                      }    
                    
-                    /*Aqui se evalua cuando ya no hay mas procesos 
-                    if(Lotes.size()==k)
+                    //Aqui se evalua cuando ya no hay mas procesos 
+                    if(Memoria.isEmpty())
                                 {
                                
                                        
@@ -389,10 +440,10 @@ public class Simulador {
                                  ventana.txt_tr.setText(""); 
                                  ventana.txt_tt.setText("");
                                  //Cuando todos los procesos terminen, acaba de contar el reloj global
-                               //  relojMemoria.cancel();
-                                // relojMemoria.purge();
+                                 relojProcesos.cancel();
+                                 relojProcesos.purge();
                                 }
-                            */
+                            
                     //cuando un proceso termina o es interrumpido a unidadtme se le asigna 0, pero aqui antes de que vuelva a empezar
                     //se incrementa, osea que segun yo no vuelve a contar de 0 sino de 1
                    
