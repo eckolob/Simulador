@@ -14,6 +14,7 @@ public class Proceso{
 	String operacion;
 	int tr,tt;
         boolean nuevo,listo,ejecucion,terminado,bloqueado;
+        int llegada,finalizacion,retorno,respuesta,espera,servicio;
 	
     public Proceso()
     {  	
@@ -30,6 +31,12 @@ public class Proceso{
         ejecucion=false;
         terminado=false;
         bloqueado=false;
+        llegada=0;
+        finalizacion=0;
+        retorno=0;
+        respuesta=0;
+        espera=0;
+        servicio=0;
     	//Si creo un objeto y no le paso parametros se ejecuta este metodo constructor
     	//Los atributos se inicializan con los valores por defecto del sistema
     } 
@@ -48,6 +55,38 @@ public class Proceso{
         bloqueado=false;
     }
  
+        
+    
+    public int tLlegada()
+    {
+        return llegada;
+    }
+    
+    public int tFinalizacion()
+    {
+        return finalizacion;
+    }
+    
+    public int tRetorno()
+    {
+        return retorno;
+    }
+    
+    public int tRespuesta()
+    {
+        return respuesta;
+    }
+    
+    public int tEspera()
+    {
+        return espera;
+    }
+    
+    public int tServicio()
+    {
+        return servicio;
+    }
+    
     public int ObtenerId() {
         return idProceso;
     }
@@ -67,6 +106,40 @@ public class Proceso{
     {
      return this.tr;    
     }
+    
+    
+    public void AsignarTLlegada(int l)
+    {
+        this.llegada=l;
+    }
+    
+    public void AsignarTFinalizacion(int f)
+    {
+        this.finalizacion=f;
+    }
+    
+    public void AsignarTRetorno(int r)
+    {
+        this.retorno=r;
+    }
+    
+    public void AsignarTRespuesta(int re)
+    {
+        this.respuesta=re;
+    }
+    
+    public void AsignarTEspera(int e)
+    {
+        this.espera=e;
+    }
+    
+    
+    public void AsignarTServicio(int s)
+    {
+        this.servicio=s;
+    }
+    
+    
     
     public void AsignarTT(int y)
     {

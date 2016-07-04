@@ -21,7 +21,7 @@ public class Simulador {
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 200;
+        int milisegundos= 50;
         int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
@@ -247,7 +247,14 @@ public class Simulador {
                  //Cada que pasen 3 segundos es una unidadtme
                  if(cuentat%3==0)              
                  {    
+                    //Al proceso que llega asignale el momento en que llego
+                     //Solo se le asigna si es 0, osea si no habia llegado 
                     
+                     if(Memoria.get(j).tLlegada()==0)
+                     {
+                         Memoria.get(j).AsignarTLlegada(unidadtme);
+                     }
+                     
                         
                         //Mostrar procesos en cola de nuevos(pendientes)
                      //Evaluar que show aqui
@@ -463,6 +470,23 @@ public class Simulador {
                          
                                  ventana.txt_tr.setText(""); 
                                  ventana.txt_tt.setText("");
+                                 
+                                for(int k=0;k<ProcesosTerminados.size();k++)
+                                {
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerId())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTME())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTR())+"\n");
+                                ventana.ta_DatosProceso.append(ProcesosTerminados.get(k).ObtenerOperacion()+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tLlegada())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tFinalizacion())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRetorno())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRespuesta())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tEspera())+"\n");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tServicio())+"\n");
+                                ventana.ta_DatosProceso.append("-----------------------\n");
+                                }
+                                
+                                 
                                  //Cuando todos los procesos terminen, acaba de contar el reloj global
                                  relojProcesos.cancel();
                                  relojProcesos.purge();

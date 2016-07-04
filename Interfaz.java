@@ -213,43 +213,43 @@ public class Interfaz extends JFrame implements KeyListener{
         
         
         et_idD       = new JLabel("ID");
-        et_idD.setBounds(x+450, y, 20, 20);     
+        et_idD.setBounds(x+450, y-7, 20, 20);     
         ventana.add(et_idD); 
         
         et_tmeD       = new JLabel("TME");
-        et_tmeD.setBounds(x+450, y+20, 30, 20);     
+        et_tmeD.setBounds(x+450, y+13, 30, 20);     
         ventana.add(et_tmeD); 
         
         et_trD       = new JLabel("TR");
-        et_trD.setBounds(x+450, y+40, 20, 20);     
+        et_trD.setBounds(x+450, y+29, 20, 20);     
         ventana.add(et_trD); 
         
         et_opD       = new JLabel("Operacion");
-        et_opD.setBounds(x+450, y+60, 70, 20);     
+        et_opD.setBounds(x+450, y+45, 70, 20);     
         ventana.add(et_opD);
        
         et_llegada       = new JLabel("Llegada");
-        et_llegada.setBounds(x+450, y+80, 70, 20);     
+        et_llegada.setBounds(x+450, y+61, 70, 20);     
         ventana.add(et_llegada);
         
         et_finalizacion       = new JLabel("Finalizacion");
-        et_finalizacion.setBounds(x+450, y+100, 70, 20);     
+        et_finalizacion.setBounds(x+450, y+77, 70, 20);     
         ventana.add(et_finalizacion);
         
         et_retorno       = new JLabel("Retorno");
-        et_retorno.setBounds(x+450, y+120, 70, 20);     
+        et_retorno.setBounds(x+450, y+93, 70, 20);     
         ventana.add(et_retorno);
         
         et_respuesta       = new JLabel("Respuesta");
-        et_respuesta.setBounds(x+450, y+140, 70, 20);     
+        et_respuesta.setBounds(x+450, y+109, 70, 20);     
         ventana.add(et_respuesta);
         
         et_espera       = new JLabel("Espera");
-        et_espera.setBounds(x+450, y+160, 70, 20);     
+        et_espera.setBounds(x+450, y+125, 70, 20);     
         ventana.add(et_espera);
         
         et_servicio       = new JLabel("Servicio");
-        et_servicio.setBounds(x+450, y+180, 70, 20);     
+        et_servicio.setBounds(x+450, y+141, 70, 20);     
         ventana.add(et_servicio);
         
         
