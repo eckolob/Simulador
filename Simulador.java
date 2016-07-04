@@ -21,7 +21,7 @@ public class Simulador {
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 100;
+        int milisegundos= 200;
         int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
@@ -314,8 +314,17 @@ public class Simulador {
                               Memoria.get(j).AsignarTR(0);    
                             }
                                    
-                                     
-                                 
+                        if (ProcesosBloqueados.isEmpty())//Si no hay nada ya no muestres nada
+                        {
+                                     ventana.ta_procesosBloqueados.setText(""); 
+                                      ventana.ta_procesosBloqueados.setLineWrap(true); 
+                                      ventana.ta_procesosBloqueados.setWrapStyleWord(true);
+                        }
+                          
+                          //  solo se pueden bloquear maximo 5 procesos, si ya estan todos bloqueados no permitir agregar mas         
+                     if(ProcesosBloqueados.size()<5)
+                       {       
+                          
                          if(ventana.I_e==true)
                          {
                          //Despues de esta interrupcion el tr pasa a ser la referencia 
@@ -329,12 +338,23 @@ public class Simulador {
                             
                             
                              //borralo de la posicion actual
-                               Memoria.remove(Memoria.get(j));    
+                            
+                              Memoria.remove(Memoria.get(j));    
+                            
+                                 
                                unidadtme=0;
                             
                          }
                                       
-                                 
+                       }else //si hay 5 procesos en bloqueados no muestres nada en ejecucion(porque en realidad no hay nada jeje)
+                     {
+                         ventana.txt_idproceso2.setText("");  
+                                 ventana.txt_operacion.setText("");
+                                 ventana.txt_tme2.setText("");
+                         
+                                 ventana.txt_tr.setText(""); 
+                                 ventana.txt_tt.setText("");
+                     }
                          
                          //PROCESOS BLOQUEADOS           
                         
@@ -432,9 +452,9 @@ public class Simulador {
                                 {
                                
                                        
-                                    ventana.ta_procesosListos.setText(""); 
-                                      ventana.ta_procesosListos.setLineWrap(true); 
-                                      ventana.ta_procesosListos.setWrapStyleWord(true);
+                                  ventana.ta_procesosListos.setText(""); 
+                                  ventana.ta_procesosListos.setLineWrap(true); 
+                                  ventana.ta_procesosListos.setWrapStyleWord(true);
                                       
                          
                                  ventana.txt_idproceso2.setText("");  
