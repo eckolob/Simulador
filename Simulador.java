@@ -21,7 +21,7 @@ public class Simulador {
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 300;
+        int milisegundos= 100;
         int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
@@ -255,9 +255,12 @@ public class Simulador {
      
                         String LA="";
                         //Puedo hacer un arraylist de cadenas para que en cada posicion este la info de un proceso
-                        //y agregar cada posicin al jtextarea al mismo tiempo, y asi tambien poder quitar individualmente 
-                    
-                         for(int a=0;a<Memoria.size();a++)
+                        //y agregar cada posicin al jtextarea al mismo tiempo, y asi tambien poder quitar individualmente
+                        
+                         
+                    if(!Memoria.isEmpty()) //Para que no trate de acceder a una posicion que no existe
+                     {
+                         for(int a=1;a<Memoria.size();a++)
                                      {
                                      
                                        LA +=(Memoria.get(a).ObtenerId())+"      "+(Memoria.get(a).ObtenerTME())+"     "+Memoria.get(a).ObtenerTR()+"\n";
@@ -272,8 +275,7 @@ public class Simulador {
                      
                      
                     
-                     if(j!=Memoria.size()) //Para que no trate de acceder a una posicion que no existe
-                     {
+                     
                   
                          tmeactual= (Memoria.get(j).ObtenerTME());
                                //PROCESO EN EJECUCION
@@ -291,7 +293,9 @@ public class Simulador {
                                  //Mostrar reloj global
                                   ventana.txt_reloj.setText(Integer.toString(relojGlobal));
                                  
-                                   unidadtme++;
+                    }     
+                                  
+                                  
                      
                          //INTERRUPCIONES
                          if(ventana.I_p==true)
@@ -370,12 +374,12 @@ public class Simulador {
                                       
                                      
                          }
-                         
-                         
+                          unidadtme++;
+                    
+                    
+                    if(!Memoria.isEmpty())
+                    {
                         
-                        
-                         
-                         
                          
                                   //TRANSICION DE EJECUCION A TERMINADO
                                   //El atributo TR cambia disminuye solo visualmente, pero solo cambia su valor dentro del proceso en caso de interrupcion E
@@ -424,7 +428,7 @@ public class Simulador {
                      }    
                    
                     //Aqui se evalua cuando ya no hay mas procesos 
-                    if(Memoria.isEmpty())
+                    if(Memoria.isEmpty()&&ProcesosBloqueados.isEmpty())
                                 {
                                
                                        
