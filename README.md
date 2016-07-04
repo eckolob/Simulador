@@ -15,3 +15,5 @@ Soluciones
   3.- Restringido
   
   
+
+Se agregaron como atributos a la clase Proceso los tiempos a calcular....
