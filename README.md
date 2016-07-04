@@ -12,5 +12,6 @@ Soluciones
  por esta
   if( Memoria.get(Memoria.size()-1).ObtenerTR()==unidadtme||ventana.I_w==true)
   fue lo que origino el error que altero el reloj
+  3.- Restringido
   
   
