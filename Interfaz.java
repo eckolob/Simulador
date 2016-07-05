@@ -12,7 +12,7 @@ import javax.swing.JOptionPane;
  
 public class Interfaz extends JFrame implements KeyListener{
     
-    boolean I_e,I_w,I_p,I_c=false;
+    boolean I_e,I_w,I_p,I_c,I_n,I_t=false;
     
     JTextArea ta_procesosListos,ta_procesosTerminados,ta_procesosBloqueados,ta_DatosProceso;
     JScrollPane sp_procesosPendientes,sp_procesoTerminado,sp_procesosBloqueados,sp_DatosProceso;
@@ -22,7 +22,8 @@ public class Interfaz extends JFrame implements KeyListener{
     JLabel et_procesosB;                                                   //Etiquetas Procesos Bloqueados
     JLabel et_procesosTerminados,et_operacion2,et_idproceso3;//Etiquetas Panel Procesos Terminados
     JLabel et_idprocesoB,et_TTB;//Procesos Bloqueados
-    JLabel et_DatosProceso,et_idD,et_tmeD,et_trD,et_opD,et_llegada,et_finalizacion,et_retorno,et_respuesta,et_espera,et_servicio;
+    //Datos del proceso
+    JLabel et_DatosProceso,et_idD,et_tmeD,et_trD,et_opD,et_llegada,et_finalizacion,et_retorno,et_respuesta,et_espera,et_servicio,et_estado;
     
     JLabel et_reloj,et_tr2;
     JLabel et_tecla;
@@ -44,7 +45,7 @@ public class Interfaz extends JFrame implements KeyListener{
     
     public void Simular()
     {
-        int x=130,y=60,ancho=100,alto=20;
+        int x=130,y=60,ancho=100,alto=20,y2=300;
  
         JFrame ventana = new JFrame("PROCESOS");  
         ventana.setLayout(null);
@@ -170,6 +171,8 @@ public class Interfaz extends JFrame implements KeyListener{
         et_idprocesoB.setBounds(x+180, y, 20, 20);     
         ventana.add(et_idprocesoB); 
         
+        
+        
         et_TTB       = new JLabel("TT");
         et_TTB.setBounds(x+210, y, 70, 20);
         ventana.add(et_TTB);
@@ -205,51 +208,56 @@ public class Interfaz extends JFrame implements KeyListener{
         ventana.add(sp_procesoTerminado);
         
         //DATOS PROCESO
-        et_DatosProceso  = new JLabel("DATOS PROCESO");
-        et_DatosProceso.setBounds(x+480, 30, 100, 20);
+        et_DatosProceso  = new JLabel("Tabla de Control de Procesos");
+        et_DatosProceso.setBounds(250, y2-34, 500, 20);
         ventana.add(et_DatosProceso); 
       
         
         
         
         et_idD       = new JLabel("ID");
-        et_idD.setBounds(x+450, y-7, 20, 20);     
+        et_idD.setBounds(50, y2, 20, 20);     
         ventana.add(et_idD); 
         
+        et_estado       = new JLabel("Estado");
+        et_estado.setBounds(70, y2, 70, 20);     
+        ventana.add(et_estado); 
+        
+        
         et_tmeD       = new JLabel("TME");
-        et_tmeD.setBounds(x+450, y+13, 30, 20);     
+        et_tmeD.setBounds(140, y2, 30, 20);     
         ventana.add(et_tmeD); 
         
         et_trD       = new JLabel("TR");
-        et_trD.setBounds(x+450, y+29, 20, 20);     
+        et_trD.setBounds(170, y2, 20, 20);     
         ventana.add(et_trD); 
         
         et_opD       = new JLabel("Operacion");
-        et_opD.setBounds(x+450, y+45, 70, 20);     
+        et_opD.setBounds(190, y2, 100, 20);     
         ventana.add(et_opD);
        
         et_llegada       = new JLabel("Llegada");
-        et_llegada.setBounds(x+450, y+61, 70, 20);     
+        et_llegada.setBounds(290, y2, 70, 20);     
         ventana.add(et_llegada);
         
         et_finalizacion       = new JLabel("Finalizacion");
-        et_finalizacion.setBounds(x+450, y+77, 70, 20);     
+        et_finalizacion.setBounds(340, y2, 70, 20);     
         ventana.add(et_finalizacion);
         
         et_retorno       = new JLabel("Retorno");
-        et_retorno.setBounds(x+450, y+93, 70, 20);     
+        et_retorno.setBounds(410, y2, 70, 20);     
         ventana.add(et_retorno);
         
         et_respuesta       = new JLabel("Respuesta");
-        et_respuesta.setBounds(x+450, y+109, 70, 20);     
+        et_respuesta.setBounds(460, y2, 70, 20);     
         ventana.add(et_respuesta);
         
         et_espera       = new JLabel("Espera");
-        et_espera.setBounds(x+450, y+125, 70, 20);     
+        et_espera.setBounds(530, y2, 70, 20);     
         ventana.add(et_espera);
         
         et_servicio       = new JLabel("Servicio");
-        et_servicio.setBounds(x+450, y+141, 70, 20);     
+        et_servicio.setBounds(580, y2, 70, 20);     
         ventana.add(et_servicio);
         
         
@@ -258,7 +266,7 @@ public class Interfaz extends JFrame implements KeyListener{
          
         ta_DatosProceso = new JTextArea();
         sp_DatosProceso = new JScrollPane(ta_DatosProceso);
-        sp_DatosProceso.setBounds(x+520,y,100,180);
+        sp_DatosProceso.setBounds(50,y2+20,600,200);
         ta_DatosProceso.setEditable(false);
         ventana.add(sp_DatosProceso);
         
@@ -271,7 +279,7 @@ public class Interfaz extends JFrame implements KeyListener{
         ventana.setLocation(100, 50);
         ventana.setResizable(true);
         ventana.setVisible(true);
-        ventana.setSize(800, 310);
+        ventana.setSize(700, 570);
         ventana.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
     }
 
@@ -313,6 +321,24 @@ public class Interfaz extends JFrame implements KeyListener{
                 I_c=true;
              }
          }
+          
+           if (e.getSource()==txt_tecla)
+        {
+             if (e.VK_N==e.getKeyCode())
+             {
+        
+                I_n=true;
+             }
+         }
+           
+            if (e.getSource()==txt_tecla)
+        {
+             if (e.VK_T==e.getKeyCode())
+             {
+        
+                I_t=true;
+             }
+         }
         // throw new UnsupportedOperationException("Not supported yet"); //To change body of generated methods, choose Tools | Templates.
     }
 
@@ -323,6 +349,8 @@ public class Interfaz extends JFrame implements KeyListener{
         I_w=false;
         I_p=false;
         I_c=false;
+        I_n=false;
+        I_t=false;
       //  throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
     

@@ -21,7 +21,7 @@ public class Simulador {
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 100;
+        int milisegundos= 10;
         int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
@@ -32,7 +32,7 @@ public class Simulador {
    
     int num1,num2;
     int tmeactual=0;
-  
+    int cuentaprocesos2=0;
     boolean termina=false;
       int id,tme,tr=0,procesosrecibidos; String resultado;
     //Contador que lleva el tiempo (determinar mi unidad de tiempo
@@ -125,9 +125,9 @@ public class Simulador {
         
         public void IngresaProcesos()
         {
-         int cuentaprocesos2=0;
+       
          int cuentaprocesos=0;
-         int sumatme=0;
+    
         
     	
         String op;
@@ -154,11 +154,11 @@ public class Simulador {
                                       tme = aleatorio.nextInt(30);
                                 }
                             
-                        sumatme+=tme;
+                      
                         
 
-                        num1 = aleatorio.nextInt(100)+1;
-                        num2 = aleatorio.nextInt(100) + 1;
+                        num1 = aleatorio.nextInt(10)+1;
+                        num2 = aleatorio.nextInt(10) + 1;
                         int o=0;
                         do
                         {                  
@@ -310,6 +310,95 @@ public class Simulador {
                                   
                      
                          //INTERRUPCIONES
+                       if(ventana.I_n==true)
+                       {
+                                 
+                     id = cuentaprocesos2+1 ;
+       
+                        tme = aleatorio.nextInt(30)+ 1 ;
+                        tr=tme;
+                               while(tme<=0)
+                                {                       
+                                      tme = aleatorio.nextInt(30);
+                                }
+                            
+                      
+                        
+
+                        num1 = aleatorio.nextInt(10)+1;
+                        num2 = aleatorio.nextInt(10) + 1;
+                        int o=0;
+                        do
+                        {                  
+                       opcion =  aleatorio.nextInt(6);
+                        switch(opcion)
+                        {
+                            
+
+                               case 1:resultado=Sumar(num1,num2);
+                                        o=1;
+                        		break;
+                         	case 2:resultado=Restar(num1,num2);
+                                        o=2;
+                        		break;
+                        	case 3:resultado=Multiplicar(num1,num2);
+                                        o=3;
+                        		break;
+                        	case 4:resultado=Dividir(num1,num2);
+                                        o=4;
+                        		break;
+                        	case 5:resultado=Residuo(num1,num2);
+                                       o=5;
+                        		break;
+                        	case 6:resultado=Potencia(num1,num2);
+                                        o=6;
+                        		break;
+                        
+                        		default:
+            			
+                        }
+                        }while(o==0);  
+                             
+                         ProcesosNuevos.add(new Proceso(id,tme,resultado,tr));  
+                                         //nuevo,listo,ejecucion,terminado,bloqueado
+                         p.AsignarEstado(true, false, false, false, false);
+                         cuentaprocesos2++;
+                       }
+                       
+                       
+                       if(ventana.I_t==true)
+                       {
+                          
+                          
+                           for(int k=0;k<Memoria.size();k++)
+                           {
+                                Memoria.get(k).AsignarTRetorno();
+                               Memoria.get(k).AsignarTEspera();
+                                
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).ObtenerId())+"     ");
+                                ventana.ta_DatosProceso.append(Memoria.get(k).ObtenerEstado()+"          ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).ObtenerTME())+"  ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).ObtenerTR())+"  ");
+                               ventana.ta_DatosProceso.append(Memoria.get(k).ObtenerOperacion()+"       ");
+                               ventana.ta_DatosProceso.append( Integer.toString(Memoria.get(k).tLlegada())+"        ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).tFinalizacion())+"       ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).tRetorno())+"        ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).tRespuesta())+"      ");
+                                ventana.ta_DatosProceso.append(Integer.toString(Memoria.get(k).tEspera())+"     ");
+                               ventana.ta_DatosProceso.append( Integer.toString(Memoria.get(k).tServicio())+"       ");
+                               ventana.ta_DatosProceso.append( "\n-------------------------------------------------------------------------\n");
+                           }
+                               
+                                
+                         
+                           try {
+                                 Pausar();
+                             } catch (InterruptedException ex) {
+                                 Logger.getLogger(Simulador.class.getName()).log(Level.SEVERE, null, ex);
+                             }
+                       }
+                    
+                    
                          if(ventana.I_p==true)
                             {
                              try {
@@ -507,23 +596,25 @@ public class Simulador {
                                  ventana.txt_tr.setText(""); 
                                  ventana.txt_tt.setText("");
                                  
-                          
+                          ventana.ta_DatosProceso.setText("");
                                  
                                 for(int k=0;k<ProcesosTerminados.size();k++)
                                 {
                                 ProcesosTerminados.get(k).AsignarTRetorno();
                                 ProcesosTerminados.get(k).AsignarTEspera();
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerId())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTME())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTR())+"\n");
-                                ventana.ta_DatosProceso.append(ProcesosTerminados.get(k).ObtenerOperacion()+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tLlegada())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tFinalizacion())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRetorno())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRespuesta())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tEspera())+"\n");
-                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tServicio())+"\n");
-                                ventana.ta_DatosProceso.append("-----------------------\n");
+                                
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerId())+"    ");
+                                ventana.ta_DatosProceso.append(ProcesosTerminados.get(k).ObtenerEstado()+"      ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTME())+"      ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTR())+"    ");
+                                ventana.ta_DatosProceso.append(ProcesosTerminados.get(k).ObtenerOperacion()+"                   ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tLlegada())+"             ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tFinalizacion())+"                  ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRetorno())+"             ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tRespuesta())+"                 ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tEspera())+"             ");
+                                ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).tServicio())+"                  ");
+                                ventana.ta_DatosProceso.append("\n---------------------------------------------------------------------------------------------------------------------------------------------------\n");
                                 }
                                 
                                  

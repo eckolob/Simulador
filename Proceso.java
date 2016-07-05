@@ -193,6 +193,38 @@ public class Proceso{
         return bloqueado;
     }
     
+    
+    public String ObtenerEstado()
+    {
+        String estado="";
+        
+        if(nuevo==true)
+        {
+            estado="Nuevo";   
+        }
+        
+        if(listo==true)
+        {
+            estado="Listo";   
+        }
+        
+        if(ejecucion==true)
+        {
+            estado="Ejecucion";   
+        }
+        
+        if(bloqueado==true)
+        {
+            estado="Bloqueado";   
+        }
+        
+        if(terminado==true)
+        {
+            estado="Terminado";   
+        }
+        
+        return estado;
+    }
 
 public void AsignarEstado(boolean n,boolean l,boolean e,boolean t,boolean b)
 {
