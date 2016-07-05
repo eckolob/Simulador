@@ -17,3 +17,6 @@ Soluciones
   
 
 Se agregaron como atributos a la clase Proceso los tiempos a calcular....
+
+Practica 3.1
+Se calculan y muestran los tiempos
