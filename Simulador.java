@@ -21,7 +21,7 @@ public class Simulador {
         
         boolean procesoTerminado=false;
         int cuentaterminados=0;  
-        int milisegundos= 50;
+        int milisegundos= 100;
         int cuentat=0,unidadtme=0,j=0,bloq=0,relojGlobal=0,relojAux=0,relojAux2=0;
         int generaids=0;   
         boolean tal=false,error=false;
@@ -204,8 +204,9 @@ public class Simulador {
                                      {
                                         if(z<ProcesosNuevos.size()) 
                                         {
+                                            ProcesosNuevos.get(z).AsignarTLlegada(0);
                                              Memoria.add(ProcesosNuevos.get(z));  //Agrega 5 o menos procesos nuevos a memoria (ARRAYLISTPROCESOS)
-                                                                                    //Estados listo, ejecucion y bloqueado
+                                                                         //Estados listo, ejecucion y bloqueado
                                         }
                                           
                                      }
@@ -248,13 +249,17 @@ public class Simulador {
                  if(cuentat%3==0)              
                  {    
                     //Al proceso que llega asignale el momento en que llego
-                     //Solo se le asigna si es 0, osea si no habia llegado 
+                    //Solo se le asigna si es 0, osea si no habia llegado 
                     
-                     if(Memoria.get(j).tLlegada()==0)
-                     {
-                         Memoria.get(j).AsignarTLlegada(unidadtme);
-                     }
+                if(!Memoria.isEmpty())
+                     { //Asigna el tiempo de respuesta solo si no lo habias asignado ya, y solo si no se fue a bloqueados el proceso10
+                         
+                         if(Memoria.get(j).tRespuesta()==0&&Memoria.get(j).respuesta_e==false)
+                    {
                      
+                            Memoria.get(j).AsignarTRespuesta(relojGlobal);
+                    } 
+                     }
                         
                         //Mostrar procesos en cola de nuevos(pendientes)
                      //Evaluar que show aqui
@@ -317,8 +322,9 @@ public class Simulador {
                           if(ventana.I_w==true)
                             {                                                                   
                               String ope = "Error          ";
-                              Memoria.get(j).AsignarOperacion(ope);
-                              Memoria.get(j).AsignarTR(0);    
+                              Memoria.get(j).AsignarOperacion(ope);  
+                              
+                              Memoria.get(j).terminado_w=true;
                             }
                                    
                         if (ProcesosBloqueados.isEmpty())//Si no hay nada ya no muestres nada
@@ -336,17 +342,28 @@ public class Simulador {
                          {
                          //Despues de esta interrupcion el tr pasa a ser la referencia 
                          //Al presionar E guarda el tiempo que le resta a el proceso  
-                            Memoria.get(j).AsignarTR(tme-(unidadtme));   
+                             
+                             if(!Memoria.isEmpty())
+                             {
+                                 Memoria.get(j).respuesta_e=true;
+                                 Memoria.get(j).AsignarTR(tme-(unidadtme));   
                                                              //nuevo,listo,ejecucion,terminado,bloqueado
                             Memoria.get(j).AsignarEstado(false, false, false,   false,    true);
+                             
+                            
+                            
                             ProcesosBloqueados.add(Memoria.get(j));
+                             }
                             relojBloqueados.add(0);
                             ProcesosBloqueados.get(ProcesosBloqueados.size()-1).AsignarTT(relojBloqueados.get(relojBloqueados.size()-1));
                             
                             
                              //borralo de la posicion actual
-                            
-                              Memoria.remove(Memoria.get(j));    
+                            if(!Memoria.isEmpty())
+                            {
+                               Memoria.remove(Memoria.get(j));
+                            }
+                                  
                             
                                  
                                unidadtme=0;
@@ -401,9 +418,15 @@ public class Simulador {
                                       
                                      
                          }
+                         
+                         
+                         
                           unidadtme++;
                     
                     
+                    
+                          
+                          
                     if(!Memoria.isEmpty())
                     {
                         
@@ -412,10 +435,20 @@ public class Simulador {
                                   //El atributo TR cambia disminuye solo visualmente, pero solo cambia su valor dentro del proceso en caso de interrupcion E
                         if( Memoria.get(j).ObtenerTR()==unidadtme||ventana.I_w==true)
                                  {              
-                                        Memoria.get(j).AsignarTR(0);    
+                                        
                                                                              //nuevo,listo,ejecucion,terminado,bloqueado
                                          Memoria.get(j).AsignarEstado(false, false, false,   true,    false);
-                                
+                                         if(Memoria.get(j).terminado_w==false)
+                                         {
+                                             Memoria.get(j).AsignarTR(0);    
+                                         }
+                                         else
+                                         {
+                                             Memoria.get(j).AsignarTR(tme-(unidadtme)); 
+                                         }
+                                       
+                                         Memoria.get(j).AsignarTFinalizacion(relojGlobal+1);
+                                         Memoria.get(j).AsignarTServicio();
                                                             
                                          procesoTerminado = Memoria.get(j).ObtenerEstadoTerminado();
                                          if(procesoTerminado==true)
@@ -440,7 +473,10 @@ public class Simulador {
                                          {                             
                                           if(Memoria.size()+ProcesosBloqueados.size()<5)
                                           {
+                                             ProcesosNuevos.get(0).AsignarTLlegada(relojGlobal+1);
                                             Memoria.add(ProcesosNuevos.get(0));
+                                            //Asignale el momento en que llego
+                                          
                                             ProcesosNuevos.remove(ProcesosNuevos.get(0));
                                           }
                                           
@@ -471,8 +507,12 @@ public class Simulador {
                                  ventana.txt_tr.setText(""); 
                                  ventana.txt_tt.setText("");
                                  
+                          
+                                 
                                 for(int k=0;k<ProcesosTerminados.size();k++)
                                 {
+                                ProcesosTerminados.get(k).AsignarTRetorno();
+                                ProcesosTerminados.get(k).AsignarTEspera();
                                 ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerId())+"\n");
                                 ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTME())+"\n");
                                 ventana.ta_DatosProceso.append(Integer.toString(ProcesosTerminados.get(k).ObtenerTR())+"\n");
@@ -497,13 +537,14 @@ public class Simulador {
                    
                     
                      relojGlobal++; 
-                     
+                    
+                          
                      
                      
                  }  
              }            
          };
-              relojProcesos.scheduleAtFixedRate(mostrarproceso,1,milisegundos); 
+              relojProcesos.scheduleAtFixedRate(mostrarproceso,250,milisegundos); 
         }
       
          

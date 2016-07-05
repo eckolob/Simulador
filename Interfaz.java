@@ -258,7 +258,7 @@ public class Interfaz extends JFrame implements KeyListener{
          
         ta_DatosProceso = new JTextArea();
         sp_DatosProceso = new JScrollPane(ta_DatosProceso);
-        sp_DatosProceso.setBounds(x+520,y,100,200);
+        sp_DatosProceso.setBounds(x+520,y,100,180);
         ta_DatosProceso.setEditable(false);
         ventana.add(sp_DatosProceso);
         

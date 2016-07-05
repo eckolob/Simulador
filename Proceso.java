@@ -13,7 +13,7 @@ public class Proceso{
     //Datos de salida
 	String operacion;
 	int tr,tt;
-        boolean nuevo,listo,ejecucion,terminado,bloqueado;
+        boolean nuevo,listo,ejecucion,terminado,bloqueado,terminado_w,respuesta_e;
         int llegada,finalizacion,retorno,respuesta,espera,servicio;
 	
     public Proceso()
@@ -30,7 +30,9 @@ public class Proceso{
         listo=false;
         ejecucion=false;
         terminado=false;
+        terminado_w=false;
         bloqueado=false;
+        respuesta_e=false;
         llegada=0;
         finalizacion=0;
         retorno=0;
@@ -118,25 +120,34 @@ public class Proceso{
         this.finalizacion=f;
     }
     
-    public void AsignarTRetorno(int r)
+    public void AsignarTRetorno()
     {
-        this.retorno=r;
+       
+        this.retorno= (finalizacion-llegada);
     }
     
     public void AsignarTRespuesta(int re)
     {
-        this.respuesta=re;
+        this.respuesta=(re-llegada);
     }
     
-    public void AsignarTEspera(int e)
+    public void AsignarTEspera()
     {
-        this.espera=e;
+        this.espera=retorno-servicio;
     }
     
     
-    public void AsignarTServicio(int s)
+    public void AsignarTServicio()
     {
-        this.servicio=s;
+        if (this.terminado_w==true)
+        {
+            this.servicio=tme-tr;
+        }
+        else
+        {
+         this.servicio=tme;   
+        }
+        
     }
     
     
